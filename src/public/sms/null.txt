@@ -1,1 +1,1 @@
-Fecha:2019-11-25,Hora:13:37:39,Cola:null,Recibidas:207,Atendidas:207,NS:43.96%,Meta:null
+Fecha:2019-11-26,Hora:08:11:36,Cola:null,Recibidas:2,Atendidas:2,NS:100.00%,Meta:null
