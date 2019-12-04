@@ -109,7 +109,7 @@ ${sqlIntervalGroupSqlQuery(userSelection)}
 -- END
 `;
 
-
+  
   try {
     let resultPre = await pool.destinyReports.query(query);
     result = resultPre;

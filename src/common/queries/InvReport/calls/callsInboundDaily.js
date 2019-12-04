@@ -38,7 +38,7 @@ export async function callsInboundDailyReport(userSelection) {
     FROM
       (${query(userSelection)}) AS daily
     `;
-
+  
   try {
     result.total = await pool.destinyReports.query(queryTotal);
   } catch (error) {
