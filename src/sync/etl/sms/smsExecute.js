@@ -97,7 +97,7 @@ GROUP BY inv_queue_sms_name
 async function exportSms ( input_date ) {
   let getSms = await smsInformation();
   console.log( '************ SMS END ****************' );
-  console.log( 'getSms', getSms );
+  console.log( 'exportSms', getSms );
 
 }
 

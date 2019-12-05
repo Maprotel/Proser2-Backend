@@ -12,7 +12,7 @@ import {
 
 /******************************************************************** */
 
-export async function displayMonitorByIndicatorsHistoric ( userSelection ) {
+export async function displayMonitorByIndicatorsSummary ( userSelection ) {
   // DEFINE VARIABLES
   let result = {
     now: moment().format( 'YYYY-MM-DD hh:mm:ss' ),
@@ -199,7 +199,7 @@ ${dateAndTimeSqlQuery( userSelection, "callentry_datetime_entry_queue" ) }
 AND callentry_date is not null
 
 
-GROUP BY inv_queue_name, start_date 
+GROUP BY inv_queue_name 
 
 
 -- ---------------------------------------------------------------
