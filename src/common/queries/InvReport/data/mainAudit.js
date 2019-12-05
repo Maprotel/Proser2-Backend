@@ -30,8 +30,8 @@ now() as now
 ,audit_agent_id
 
 ,audit_break_id
-,audit_datetime_init
-,audit_datetime_end
+,TIME(audit_datetime_init) as audit_datetime_init
+,TIME(audit_datetime_end) as audit_datetime_end
 ,audit_duration
 ,audit_duration_sec
 ,audit_status
