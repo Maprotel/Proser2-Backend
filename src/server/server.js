@@ -12,7 +12,7 @@ const chalk = require( "chalk" );
 global.__basedir = __dirname;
 
 // Dual database strategy
-const version = "2.3.8";
+const version = "2.3.9";
 
 require( `dotenv` ).config();
 
