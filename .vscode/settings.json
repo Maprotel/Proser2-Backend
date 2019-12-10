@@ -14,11 +14,9 @@
     "**/*.css": true,
     "**/*.map": true,
     "**/*.spec.ts": true,
-
     ".htaccess": true,
-
     "LICENSE": true,
-    "node_modules": true
+    "node_modules": false
   },
   "files.watcherExclude": {
     ".babelrc": true,
@@ -30,7 +28,6 @@
     ".jshintrc": true,
     ".npmignore": true,
     ".env": false,
-
     "node_modules": false
   },
   "git.ignoreLimitWarning": true,
