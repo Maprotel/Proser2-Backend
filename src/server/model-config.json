@@ -201,5 +201,9 @@
   "HcxChange": {
     "dataSource": "proserInventory",
     "public": true
+  },
+  "Employee": {
+    "dataSource": "proserInventory",
+    "public": true
   }
 }
