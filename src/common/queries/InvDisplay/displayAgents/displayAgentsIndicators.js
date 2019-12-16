@@ -28,11 +28,11 @@ import { userSelectionBlank } from "../../../functions/userSelectionFunctions.js
 
 /******************************************************************** */
 // MAIN FUNCTION
-export async function displayAgentsIndicators(userSelection) {
+export async function displayAgentsIndicators ( userSelection ) {
   let result = {};
   let resume_error = false;
 
-  if(userSelection.mode.name='Actual'){
+  if ( userSelection.mode.name = 'Actual' ) {
     userSelection.start_date = userSelection.current_date;
     userSelection.end_date = userSelection.end_date;
   }
@@ -43,16 +43,16 @@ export async function displayAgentsIndicators(userSelection) {
   let displayAgentsCurrentCallsIndicators = await displayAgentsCurrentCallsIndicatorsFunction(
     userSelection
   );
-  let agentsPlannedTotal = await agentsPlannedTotalFunction(userSelection);
-  let agentsConnectedTotal = await agentsConnectedTotalFunction(userSelection);
-  let agentsLoggedTotal = await agentsLoggedTotalFunction(userSelection);
+  let agentsPlannedTotal = await agentsPlannedTotalFunction( userSelection );
+  let agentsConnectedTotal = await agentsConnectedTotalFunction( userSelection );
+  let agentsLoggedTotal = await agentsLoggedTotalFunction( userSelection );
   let agentsConnectedByGroup = await agentsConnectedByGroupFunction(
     userSelection
   );
 
-  let agentHistoricResume = await agentHistoricResumeFunction(userSelection);
+  let agentHistoricResume = await agentHistoricResumeFunction( userSelection );
 
-  let agentsAuxiliarResume = await agentsAuxiliarResumeFunction(userSelection);
+  let agentsAuxiliarResume = await agentsAuxiliarResumeFunction( userSelection );
   let agentsAssignationResume = await agentsAssignationResumeFunction(
     userSelection
   );
@@ -63,37 +63,37 @@ export async function displayAgentsIndicators(userSelection) {
     userSelection
   );
 
-  let scale = await scaleFunction(userSelection);
+  let scale = await scaleFunction( userSelection );
 
   let colors;
 
   if (
-    Array.isArray(displayAgentsCallsIndicators) &
-    (typeof displayAgentsCallsIndicators[0] !== "undefined")
+    Array.isArray( displayAgentsCallsIndicators ) &
+    ( typeof displayAgentsCallsIndicators[ 0 ] !== "undefined" )
   ) {
-    console.log("displayAgentsCallsIndicators", displayAgentsCallsIndicators);
+    console.log( "displayAgentsCallsIndicators", displayAgentsCallsIndicators );
 
     colors = [
       {
         AgentsServiceLevel: onColorForPercentage(
-          displayAgentsCallsIndicators[0].AgentsServiceLevel,
-          scale[0]
+          displayAgentsCallsIndicators[ 0 ].AgentsServiceLevel,
+          scale[ 0 ]
         ),
         AgentsAttentionLevel: onColorForPercentage(
-          displayAgentsCallsIndicators[0].AgentsAttentionLevel,
-          scale[0]
+          displayAgentsCallsIndicators[ 0 ].AgentsAttentionLevel,
+          scale[ 0 ]
         ),
         AgentsAbandonLevel: onColorForPercentage(
-          displayAgentsCallsIndicators[0].AgentsAbandonLevel,
-          scale[0]
+          displayAgentsCallsIndicators[ 0 ].AgentsAbandonLevel,
+          scale[ 0 ]
         ),
         callsOnQueue: onColorForCallsOnQueue(
-          displayAgentsCurrentCallsIndicators[0].maxWaitTimeOnQue,
-          parseInt(process.env.CDR_SERVICE_IDEAL_TIME)
+          displayAgentsCurrentCallsIndicators[ 0 ].maxWaitTimeOnQue,
+          parseInt( process.env.CDR_SERVICE_IDEAL_TIME )
         ),
-        callsOnQueueIdeal: parseInt(process.env.CDR_SERVICE_IDEAL_TIME),
+        callsOnQueueIdeal: parseInt( process.env.CDR_SERVICE_IDEAL_TIME ),
         callsOnQueueWaitTime:
-          displayAgentsCurrentCallsIndicators[0].maxWaitTimeOnQue
+          displayAgentsCurrentCallsIndicators[ 0 ].maxWaitTimeOnQue
       }
     ];
   }
@@ -119,7 +119,7 @@ export async function displayAgentsIndicators(userSelection) {
 
 /**************************************** */
 // indicators
-async function displayAgentsCallsIndicatorsFunction(userSelection) {
+async function displayAgentsCallsIndicatorsFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
 
@@ -136,19 +136,19 @@ async function displayAgentsCallsIndicatorsFunction(userSelection) {
   ,callentry_agent_id as agent_id
   ,inv_agent_name as agent_name
   ,DAYNAME(callentry_date) as day_name
-  ,WEEKDAY(callentry_date) + ${process.env.MONDAY_CONFIG} as week_day
+  ,WEEKDAY(callentry_date) + ${process.env.MONDAY_CONFIG } as week_day
       
-  ,'${objectDateToTextDate(userSelection.start_date)}' AS start_date
-  ,'${objectDateToTextDate(userSelection.end_date)}' AS end_date
+  ,'${objectDateToTextDate( userSelection.start_date ) }' AS start_date
+  ,'${objectDateToTextDate( userSelection.end_date ) }' AS end_date
 
-  ,'${valueFromObject(userSelection.start_time, "00:00:00")}' AS start_time
-  ,'${valueFromObject(userSelection.end_time, "24:00:00")}' AS end_time
+  ,'${valueFromObject( userSelection.start_time, "00:00:00" ) }' AS start_time
+  ,'${valueFromObject( userSelection.end_time, "24:00:00" ) }' AS end_time
   
   ,MIN(DATE_FORMAT(callentry_datetime_init, '%H:%i:%s')) AS min_start_time
   ,MAX(DATE_FORMAT(callentry_datetime_end, '%H:%i:%s')) AS max_end_time
   
-  ,${process.env.CDR_SERVICE_IDEAL_TIME} AS idealResponseTime
-  ,${process.env.CDR_SHORTCALL_TIME} AS shortTimeDef
+  ,${process.env.CDR_SERVICE_IDEAL_TIME } AS idealResponseTime
+  ,${process.env.CDR_SHORTCALL_TIME } AS shortTimeDef
 
   ,MAX(callentry_duration_sec_wait) as maxWaitTime
   
@@ -159,22 +159,22 @@ async function displayAgentsCallsIndicatorsFunction(userSelection) {
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end) AS AgentsAttended
   
   ,SUM(case when callentry_duration_sec <= ${
-  process.env.CDR_SHORTCALL_TIME
-} then 1 else 0 end) AS AgentsShort
+    process.env.CDR_SHORTCALL_TIME
+    } then 1 else 0 end) AS AgentsShort
   
   ,SUM(case when (callentry_duration_sec_wait <= ${
-  process.env.CDR_SERVICE_IDEAL_TIME
-} AND callentry_status = 'terminada')then 1 else 0 end) AS AgentsBeforeTime
+    process.env.CDR_SERVICE_IDEAL_TIME
+    } AND callentry_status = 'terminada')then 1 else 0 end) AS AgentsBeforeTime
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end) - SUM(case when (callentry_duration_sec_wait <= ${
-  process.env.CDR_SERVICE_IDEAL_TIME
-} AND callentry_status = 'terminada')then 1 else 0 end) AS AgentsAfterTime
+    process.env.CDR_SERVICE_IDEAL_TIME
+    } AND callentry_status = 'terminada')then 1 else 0 end) AS AgentsAfterTime
   
   ,SUM(callentry_hung_agent) AS AgentsHungAgent
   
   ,SUM (case when (callentry_status = 'terminada' AND callentry_duration_sec_wait <= ${
-  process.env.CDR_SERVICE_IDEAL_TIME
-} ) then 1 else 0 end) / SUM ( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS AgentsServiceLevel
+    process.env.CDR_SERVICE_IDEAL_TIME
+    } ) then 1 else 0 end) / SUM ( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS AgentsServiceLevel
 
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end)/
@@ -214,8 +214,8 @@ async function displayAgentsCallsIndicatorsFunction(userSelection) {
    LEFT OUTER JOIN HcaAgent
    ON (callentry_agent_id = hca_agent_id AND callentry_date = 
     (SELECT hca_agent_date FROM HcaAgent WHERE hca_agent_date <= '${objectDateToTextDate(
-    userSelection.start_date
-  )}' ORDER BY hca_agent_date DESC LIMIT 1))
+      userSelection.start_date
+    ) }' ORDER BY hca_agent_date DESC LIMIT 1))
    
 
 
@@ -231,38 +231,38 @@ async function displayAgentsCallsIndicatorsFunction(userSelection) {
    
    
    -- TIME AND DATE
-   ${dateAndTimeSqlQuery(userSelection, "callentry_datetime_entry_queue")}
+   ${dateAndTimeSqlQuery( userSelection, "callentry_datetime_entry_queue" ) }
    AND callentry_date is not null
    
    -- AGENT
-   ${arrayToSqlQuery(userSelection.agent, "callentry_agent_id")}
+   ${arrayToSqlQuery( userSelection.agent, "callentry_agent_id" ) }
    
    -- SUPERVISOR
-   ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+   ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
    
    -- SCHEDULE
-   ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+   ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
    
    -- ROLE
-   ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+   ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
    
    -- CLIENT
-   ${arrayToJsonSqlQuery(userSelection.client, "hca_queue_client_json")}
+   ${arrayToJsonSqlQuery( userSelection.client, "hca_queue_client_json" ) }
    
    -- QUEUE
-   ${arrayToSqlQuery(userSelection.queue, "callentry_queue_id")}
+   ${arrayToSqlQuery( userSelection.queue, "callentry_queue_id" ) }
    
    -- SERVICE
-   ${arrayToJsonSqlQuery(userSelection.service, "hca_queue_service_json")}
+   ${arrayToJsonSqlQuery( userSelection.service, "hca_queue_service_json" ) }
    
    -- CAMPAIGN
-   ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
+   ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
    
    -- BREAK
-   ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+   ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
    
    -- ASIGNACION
-   ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+   ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
    
   
    GROUP BY callentry_agent_id
@@ -271,16 +271,16 @@ async function displayAgentsCallsIndicatorsFunction(userSelection) {
   `;
 
   try {
-    result = await pool.destinyReports.query(query);
+    result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { errorDetail: error });
+  } catch ( error ) {
+    return ( result = { errorDetail: error } );
   }
 }
 
 /**************************************** */
 // current calls
-async function displayAgentsCurrentCallsIndicatorsFunction(userSelection) {
+async function displayAgentsCurrentCallsIndicatorsFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -326,28 +326,28 @@ WHERE 1
 -- TIME AND DATE
 
 -- AGENT
-${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
 
 -- SUPERVISOR
-${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
 
 -- SCHEDULE
-${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
 
 -- ROLE
-${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
 
 -- CLIENT
-${arrayToJsonSqlQuery(userSelection.client, "hca_queue_client_json")}
+${arrayToJsonSqlQuery( userSelection.client, "hca_queue_client_json" ) }
 
 -- QUEUE
-${arrayToSqlQuery(userSelection.queue, "rcc_callentry_queue_id")}
+${arrayToSqlQuery( userSelection.queue, "rcc_callentry_queue_id" ) }
 
 -- SERVICE
-${arrayToJsonSqlQuery(userSelection.service, "hca_queue_service_json")}
+${arrayToJsonSqlQuery( userSelection.service, "hca_queue_service_json" ) }
 
 -- CAMPAIGN
-${arrayToSqlQuery(userSelection.campaign, "rcc_callentry_campaign_id")}
+${arrayToSqlQuery( userSelection.campaign, "rcc_callentry_campaign_id" ) }
 
 -- BREAK
 -- ASIGNACION
@@ -357,16 +357,16 @@ GROUP BY rcc_callentry_agent_id
 `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // Agents planned
-async function agentsPlannedTotalFunction(userSelection) {
+async function agentsPlannedTotalFunction ( userSelection ) {
   let result = [
     {
       now: "",
@@ -391,34 +391,34 @@ SELECT
         WHERE 1
         
         -- TIME AND DATE
-        ${dateAndTimeSqlQuery(userSelection, "hca_agent_date")}
+        ${dateAndTimeSqlQuery( userSelection, "hca_agent_date" ) }
         
         -- AGENT
-        ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+        ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
         
         -- SUPERVISOR
         ${arrayToJsonSqlQuery(
     userSelection.supervisor,
     "hca_agent_people_json"
-  )}
+  ) }
         
         -- SCHEDULE
-        ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+        ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
         
         -- ROLE
-        ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+        ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
         
         -- CLIENT
-        ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_client_json")}
+        ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_client_json" ) }
         
         -- QUEUE
-        ${arrayToJsonSqlQuery(userSelection.queue, "hca_agent_queue_json")}
+        ${arrayToJsonSqlQuery( userSelection.queue, "hca_agent_queue_json" ) }
         
         -- SERVICE
-        ${arrayToJsonSqlQuery(userSelection.service, "hca_agent_service_json")}
+        ${arrayToJsonSqlQuery( userSelection.service, "hca_agent_service_json" ) }
         
         -- CAMPAIGN
-        ${arrayToSqlQuery(userSelection.campaign, "hca_agent_campaign_json")}
+        ${arrayToSqlQuery( userSelection.campaign, "hca_agent_campaign_json" ) }
         
         -- BREAK
         -- ASIGNACION
@@ -428,16 +428,16 @@ SELECT
         `;
 
   try {
-    let temp = await pool.destinyReports.query(query);
+    let temp = await pool.destinyReports.query( query );
     return temp.length < 1 ? result : temp;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // Agents connected
-async function agentsConnectedTotalFunction(userSelection) {
+async function agentsConnectedTotalFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -475,60 +475,60 @@ async function agentsConnectedTotalFunction(userSelection) {
   rca_agent_status = 'Logueado'
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQuery(userSelection, "rca_agent_datetime_login")}
+  -- ${dateAndTimeSqlQuery( userSelection, "rca_agent_datetime_login" ) }
   
   -- AGENT
-  ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+  ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
   
   -- SUPERVISOR
-  ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+  ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
   
   -- SCHEDULE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
   
   -- ROLE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
   
   -- CLIENT
-  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
+  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
   
   -- QUEUE
-  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
+  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
   
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
   
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
   
   -- BREAK
-  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
   
   -- ASIGNACION
-  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
   
   
   -- END -----------------------------------------------------------
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 // Agents connected
-async function agentsLoggedTotalFunction(userSelection) {
+async function agentsLoggedTotalFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -562,61 +562,61 @@ async function agentsLoggedTotalFunction(userSelection) {
 
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
+  ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
   
   -- AGENT
-  ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
+  ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
   
   -- SUPERVISOR
-  ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+  ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
   
   -- SCHEDULE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
   
   -- ROLE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
   
   -- CLIENT
-  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
+  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
   
   -- QUEUE
-  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
+  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
   
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
   
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
   
   -- BREAK
-  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
   
   -- ASIGNACION
-  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
   
   
   -- END ------------------------------------------------------------
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // agents grouped
-async function agentsConnectedByGroupFunction(userSelection) {
+async function agentsConnectedByGroupFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -658,45 +658,45 @@ async function agentsConnectedByGroupFunction(userSelection) {
   rca_agent_status = 'Logueado'
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQuery(userSelection, "rca_agent_datetime_login")}
+  ${dateAndTimeSqlQuery( userSelection, "rca_agent_datetime_login" ) }
   
   -- AGENT
-  ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+  ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
   
   -- SUPERVISOR
-  ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+  ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
   
   -- SCHEDULE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
   
   -- ROLE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
   
   -- CLIENT
-  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
+  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
   
   -- QUEUE
-  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
+  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
   
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
   
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
   
   -- BREAK
-  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
   
   -- ASIGNACION
-  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
   
   
   GROUP BY rca_agent_id
@@ -705,16 +705,16 @@ async function agentsConnectedByGroupFunction(userSelection) {
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // agents historic
-async function agentHistoricResumeFunction(userSelection) {
+async function agentHistoricResumeFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -729,9 +729,9 @@ async function agentHistoricResumeFunction(userSelection) {
       LEFT OUTER JOIN InvAgent as agent
       ON hca_agent_id = inv_agent_id
       WHERE
-      hca_agent_date = '${userSelection.start_date}'
+      hca_agent_date = '${userSelection.start_date }'
       AND
-      ${userSelection.filter_hca_agent}
+      ${userSelection.filter_hca_agent }
 
 
       UNION
@@ -749,9 +749,9 @@ async function agentHistoricResumeFunction(userSelection) {
       WHERE
       audit_break_id = 0
       AND
-      audit_date = '${userSelection.start_date}'
+      audit_date = '${userSelection.start_date }'
       AND
-      ${userSelection.filter_inv_agent}
+      ${userSelection.filter_inv_agent }
 
 
       UNION
@@ -768,11 +768,11 @@ async function agentHistoricResumeFunction(userSelection) {
       LEFT OUTER JOIN InvAgent
       ON callentry_agent_id = inv_agent_id
       WHERE
-      callentry_date = '${userSelection.start_date}'
+      callentry_date = '${userSelection.start_date }'
       AND
       callentry_status = 'terminada'
       AND
-      ${userSelection.filter_inv_agent}
+      ${userSelection.filter_inv_agent }
 
       UNION
 
@@ -789,16 +789,16 @@ async function agentHistoricResumeFunction(userSelection) {
       WHERE
       cdr_call_made = 1
       AND
-      cdr_date = '${userSelection.start_date}'
+      cdr_date = '${userSelection.start_date }'
       AND
-      ${userSelection.filter_inv_agent}
+      ${userSelection.filter_inv_agent }
 
         `;
 
   try {
-    const result = await pool.destinyReports.query(query);
+    const result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
+  } catch ( error ) {
     resume_error = true;
     return {
       error: "agentsIndicators - agentHistoricResumeFunction " + error
@@ -808,7 +808,7 @@ async function agentHistoricResumeFunction(userSelection) {
 
 /**************************************** */
 // break auxiliar resume
-async function agentsAuxiliarResumeFunction(userSelection) {
+async function agentsAuxiliarResumeFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -851,45 +851,45 @@ async function agentsAuxiliarResumeFunction(userSelection) {
     rcb_break_productivity = 0
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQuery(userSelection, "rcb_break_datetime_init")}
+  ${dateAndTimeSqlQuery( userSelection, "rcb_break_datetime_init" ) }
   
   -- AGENT
-  ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+  ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
   
   -- SUPERVISOR
-  ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+  ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
   
   -- SCHEDULE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
   
   -- ROLE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
   
   -- CLIENT
-  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
+  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
   
   -- QUEUE
-  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
+  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
   
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
   
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
   
   -- BREAK
-  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
   
   -- ASIGNACION
-  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
   
   
   GROUP BY rcb_break_name
@@ -898,16 +898,16 @@ async function agentsAuxiliarResumeFunction(userSelection) {
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // break assignation resume
-async function agentsAssignationResumeFunction(userSelection) {
+async function agentsAssignationResumeFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -950,45 +950,45 @@ async function agentsAssignationResumeFunction(userSelection) {
     rcb_break_productivity = 1
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQuery(userSelection, "rcb_break_datetime_init")}
+  ${dateAndTimeSqlQuery( userSelection, "rcb_break_datetime_init" ) }
   
   -- AGENT
-  ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+  ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
   
   -- SUPERVISOR
-  ${arrayToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json")}
+  ${arrayToJsonSqlQuery( userSelection.supervisor, "hca_agent_people_json" ) }
   
   -- SCHEDULE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_schedule_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_schedule_json" ) }
   
   -- ROLE
-  ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_role_json")}
+  ${arrayToJsonSqlQuery( userSelection.client, "hca_agent_role_json" ) }
   
   -- CLIENT
-  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
+  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
   
   -- QUEUE
-  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
+  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
   
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
   
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
   
   -- BREAK
-  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
   
   -- ASIGNACION
-  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
   
   
   GROUP BY rcb_break_name
@@ -998,16 +998,16 @@ async function agentsAssignationResumeFunction(userSelection) {
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
 /**************************************** */
 // scale
-async function scaleFunction(userSelection) {
+async function scaleFunction ( userSelection ) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -1016,18 +1016,18 @@ async function scaleFunction(userSelection) {
     FROM
     InvScale
     WHERE
-    inv_scale_name = '${process.env.COLORSCALE_NAME}'
+    inv_scale_name = '${process.env.COLORSCALE_NAME }'
   `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
-async function agentsHistoricBreakResumeFunction(userSelection) {
+async function agentsHistoricBreakResumeFunction ( userSelection ) {
   let query = `
   SELECT
       inv_break_name as name
@@ -1060,31 +1060,31 @@ async function agentsHistoricBreakResumeFunction(userSelection) {
       inv_break_name is not null
 
       -- TIME AND DATE
-      ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
+      ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
       
       -- AGENT
-      ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+      ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
       
       -- SUPERVISOR
       ${arrayToJsonSqlQuery(
     userSelection.supervisor,
     "hca_agent_people_json",
     "supervisor"
-  )}
+  ) }
       
       -- SCHEDULE
       ${arrayToJsonSqlQuery(
     userSelection.client,
     "hca_agent_time_json",
     "schedule"
-  )}
+  ) }
       
       -- ROLE
       ${arrayToJsonSqlQuery(
     userSelection.client,
     "hca_agent_people_json",
     "role"
-  )}
+  ) }
       
       
       -- CLIENT
@@ -1092,48 +1092,48 @@ async function agentsHistoricBreakResumeFunction(userSelection) {
     userSelection.client,
     "audit_operation_json",
     "client"
-  )}
+  ) }
       
       -- QUEUE
       ${arrayToJsonSqlQuery(
     userSelection.queue,
     "audit_operation_json",
     "queue"
-  )}
+  ) }
       
       -- SERVICE
       ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
       
       -- CAMPAIGN
       ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
       
       -- BREAK
-      ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+      ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
       
       -- ASIGNACION
-      ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+      ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
     
       
       GROUP BY inv_break_name
 `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }
 
-async function agentsHistoricAssignationResumeFunction(userSelection) {
+async function agentsHistoricAssignationResumeFunction ( userSelection ) {
   let query = `
   SELECT
       inv_break_name as name
@@ -1166,31 +1166,31 @@ async function agentsHistoricAssignationResumeFunction(userSelection) {
       inv_break_name is not null
 
       -- TIME AND DATE
-      ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
+      ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
       
       -- AGENT
-      ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
+      ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
       
       -- SUPERVISOR
       ${arrayToJsonSqlQuery(
     userSelection.supervisor,
     "hca_agent_people_json",
     "supervisor"
-  )}
+  ) }
       
       -- SCHEDULE
       ${arrayToJsonSqlQuery(
     userSelection.client,
     "hca_agent_time_json",
     "schedule"
-  )}
+  ) }
       
       -- ROLE
       ${arrayToJsonSqlQuery(
     userSelection.client,
     "hca_agent_people_json",
     "role"
-  )}
+  ) }
       
       
       -- CLIENT
@@ -1198,43 +1198,43 @@ async function agentsHistoricAssignationResumeFunction(userSelection) {
     userSelection.client,
     "audit_operation_json",
     "client"
-  )}
+  ) }
       
       -- QUEUE
       ${arrayToJsonSqlQuery(
     userSelection.queue,
     "audit_operation_json",
     "queue"
-  )}
+  ) }
       
       -- SERVICE
       ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  )}
+  ) }
       
       -- CAMPAIGN
       ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  )}
+  ) }
       
       -- BREAK
-      ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
+      ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
       
       -- ASIGNACION
-      ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
+      ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
     
       
       GROUP BY inv_break_name
 `;
 
   try {
-    let result = await pool.destinyReports.query(query);
+    let result = await pool.destinyReports.query( query );
     return result;
-  } catch (error) {
-    return (result = { error: error });
+  } catch ( error ) {
+    return ( result = { error: error } );
   }
 }

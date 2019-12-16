@@ -1,19 +1,19 @@
 "use strict";
 
-import * as userSelectionChange from "../queries/ShowDisplay/userSelectionChange";
+import * as userSelectionChange from "../queries/ProShowDisplay/userSelectionChange";
 
-module.exports = function(ProShowDisplay) {
-  ProShowDisplay.auditFunction = async function(type) {
-    return userSelectionChange.auditFunction(type);
+module.exports = function ( ProShowDisplay ) {
+  ProShowDisplay.userSelectionChange = async function () {
+    return userSelectionChange.userSelectionChange();
   };
 
-  ProShowDisplay.remoteMethod("auditFunction", {
+  ProShowDisplay.remoteMethod( "userSelectionChange", {
     accepts: {
-      arg: "object",
-      type: "text",
+      arg: "",
+      type: "any",
       http: { source: "body" }
     },
-    returns: { type: "string", root: "true" },
-    description: ["Returns values of auxiliar report"]
-  });
+    returns: { type: "array", root: "true" },
+    description: [ "Returns values of breaks for each selected agent" ]
+  } );
 };
