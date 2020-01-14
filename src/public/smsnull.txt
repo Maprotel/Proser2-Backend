@@ -1,0 +1,1 @@
+Fecha:2019-12-10,Hora:08:23:05,Cola:null,Recibidas:40,Atendidas:40,NS:70.00%,Meta:null
