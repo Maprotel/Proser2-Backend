@@ -39,9 +39,9 @@ now() as now
 ,audit_operation_json
 
 
-,JSON_VALUE(JSON_EXTRACT(inv_agent_people_json, "$[*].name"), "$[*]") AS supervisor
-,JSON_VALUE(JSON_EXTRACT(inv_agent_time_json, "$[*].name"), "$[*]") AS schedule
-,JSON_VALUE(JSON_EXTRACT(inv_agent_people_json, "$[*].name"), "$[*]") AS role
+,JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT(audit_people_json, '$.supervisor.name'), '$[0]')) AS supervisor
+,JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT(audit_time_json, '$.schedule.name'), '$[0]')) AS schedule
+,JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT(audit_people_json, '$.role.name'), '$[0]')) AS role
 
 ,JSON_VALUE(JSON_EXTRACT(audit_operation_json, "$.client[*].name"), "$[*]") AS client
 ,JSON_VALUE(JSON_EXTRACT(audit_operation_json, "$.queue[*].name"), "$[*]") AS queue
