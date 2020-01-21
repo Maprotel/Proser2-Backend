@@ -1,0 +1,1 @@
+[](http://the-asterisk-book.com/1.6/index.html)

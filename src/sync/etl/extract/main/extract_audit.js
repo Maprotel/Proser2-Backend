@@ -130,7 +130,7 @@ async function extractMainAudit(start_date) {
 /************************************************************************ */
 
 // npx babel-node src/sync/etl/extract/main/extract_audit.js
-// extractMainAudit(incoming_date);
+extractMainAudit(incoming_date);
 
 module.exports = {
   extractMainAudit
