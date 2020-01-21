@@ -39,6 +39,7 @@ export async function operationDetailOperationReport(userSelection) {
   , outbound_internal_sec
   , outbound_internal_time
   , outbound_internal_sec/login_duration_sec as internal_percent
+  , hung_agent as hung_by_agent
   , auxiliar_duration_sec
   , auxiliar_duration_time
   , auxiliar_duration_sec/login_duration_sec as auxiliar_percent
@@ -100,6 +101,8 @@ base_date
 , SEC_TO_TIME(SUM(IF(auxiliar_duration_sec is not null, auxiliar_duration_sec, 0))) as auxiliar_duration_time
 , SUM(IF(assignation_duration_sec is not null, assignation_duration_sec, 0)) as assignation_duration_sec
 , SEC_TO_TIME(SUM(IF(assignation_duration_sec is not null, assignation_duration_sec, 0))) as assignation_duration_time
+
+, SUM(IF(hung_agent is not null, hung_agent, 0)) as hung_agent
 
 
 FROM 
@@ -168,6 +171,7 @@ DATE_FORMAT(audit_datetime_init, '%Y-%m-%d') as base_date
 ,null as outbound_internal_sec
 ,null as auxiliar_duration_sec
 ,null as assignation_duration_sec
+,null as hung_agent
 
 
 -- ---------------------------------------------------------------
@@ -224,6 +228,7 @@ DATE_FORMAT(audit_datetime_init, '%Y-%m-%d') as base_date
 ,null as outbound_internal_sec
 ,IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec)) as auxiliar_duration_sec
 ,null as assignation_duration_sec
+,null as hung_agent
 
 
 -- ---------------------------------------------------------------
@@ -282,7 +287,7 @@ DATE_FORMAT(audit_datetime_init, '%Y-%m-%d') as base_date
 ,null as outbound_internal_sec
 ,null as auxiliar_duration_sec
 ,IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec)) as assignation_duration_sec
-
+,null as hung_agent
 
 -- ---------------------------------------------------------------
 -- TABLES & JOINS
@@ -340,6 +345,7 @@ DATE_FORMAT(cdr_calldate, '%Y-%m-%d') as base_date
 ,IF(cdr_call_type = 'internal', SUM(cdr_duration_sec), 0) as outbound_internal_sec
 ,null as auxiliar_duration_sec
 ,null as assignation_duration_sec
+,IF(cdr_call_type = 'outbound', COUNT(cdr_call_hungout), 0) as hung_agent
 
 -- ---------------------------------------------------------------
 -- TABLES & JOINS
@@ -401,6 +407,7 @@ DATE_FORMAT(callentry_datetime_init, '%Y-%m-%d') as base_date
 ,null as outbound_internal_sec
 ,null as auxiliar_duration_sec
 ,null as assignation_duration_sec
+,IF(callentry_status = 'terminada', COUNT(callentry_hung_agent), 0) as hung_agent
 
 
 -- ---------------------------------------------------------------

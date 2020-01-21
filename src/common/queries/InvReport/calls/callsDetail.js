@@ -32,7 +32,7 @@ now() as now
 ,inv_agent_name as agent_name
 ,JSON_UNQUOTE(JSON_EXTRACT(cdr_people_json, "$[0].agent[0].extension")) as agent_extension
 ,IF(cdr_dcontext = 'from-internal-xfer', 'xfer', '') as agent_transfer
-,JSON_UNQUOTE(JSON_EXTRACT(inv_agent_people_json, "$[0].name") ) as agent_supervisor_name
+,JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT(inv_agent_people_json, '$.supervisor.name'), '$[0]')) as agent_supervisor_name
 ,DATE_FORMAT(cdr_date, '%Y-%m-%d') as start_date
 ,DATE_FORMAT(cdr_calldate, '%H:%i:%s') as start_time
 ,cdr_call_class as call_class
