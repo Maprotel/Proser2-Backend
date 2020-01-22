@@ -20,6 +20,7 @@ import * as callsOutboundDailyByInterval from "../queries/InvReport/calls/callsO
 import * as callsAutomaticDaily from "../queries/InvReport/calls/callsAutomaticDaily";
 import * as callsAutomaticByIntervalDaily from "../queries/InvReport/calls/callsAutomaticDailyByInterval";
 import * as callsWaitTime from "../queries/InvReport/calls/callsWaitTime";
+import * as callsIndicatorsByInterval from "../queries/InvReport/calls/callsIndicatorsByInterval";
 
 import * as callsAbandoned from "../queries/InvReport/calls/callsAbandoned";
 
@@ -334,6 +335,22 @@ module.exports = function ( InvReport ) {
     },
     returns: { type: "array", root: "true" },
     description: [ "Returns values of calls wait time report" ]
+  } );
+
+  //**********************REMOTE METHOD CALLS INDICATORS BY INTERVAL**********************/
+
+  InvReport.callsIndicatorsByIntervalReport = async function ( userSelection ) {
+    return callsIndicatorsByInterval.callsIndicatorsByIntervalReport( userSelection );
+  };
+
+  InvReport.remoteMethod( "callsIndicatorsByIntervalReport", {
+    accepts: {
+      arg: "userSelection",
+      type: "UserSelection",
+      http: { source: "body" }
+    },
+    returns: { type: "array", root: "true" },
+    description: [ "Returns values of calls indicators by interval" ]
   } );
 
   //*****************************OPERATION REPORT*******************************/
