@@ -1,14 +1,14 @@
-if (process.env.NODE_ENV !== `development`) {
-  require(`dotenv`).config();
+if ( process.env.NODE_ENV !== `development` ) {
+  require( `dotenv` ).config();
 }
 
 /***************************** */
 
-const util = require(`util`);
-const mysql = require(`mysql`);
+const util = require( `util` );
+const mysql = require( `mysql` );
 
 // REPORTS
-const destinyReports = mysql.createPool({
+const destinyReports = mysql.createPool( {
   connectionLimit: 1000,
   connectTimeout: 60 * 60 * 1000,
   acquireTimeout: 60 * 60 * 1000,
@@ -19,11 +19,12 @@ const destinyReports = mysql.createPool({
   database: process.env.PROSER_REPORTS_DATABASE,
   multipleStatements: true,
   max_statement_time: 20,
-  connectionName: "destinyReports"
-});
+  connectionName: "destinyReports",
+  insecureAuth: true
+} );
 
 // ORIGIN
-const origin = mysql.createPool({
+const origin = mysql.createPool( {
   connectionLimit: 1000,
   connectTimeout: 60 * 60 * 1000,
   acquireTimeout: 60 * 60 * 1000,
@@ -34,11 +35,12 @@ const origin = mysql.createPool({
   database: process.env.ORIGIN_ASTERISK_DB,
   multipleStatements: true,
   max_statement_time: 20,
-  connectionName: "origin"
-});
+  connectionName: "origin",
+  insecureAuth: true
+} );
 
 // REPORTS
-const destinyInventory = mysql.createPool({
+const destinyInventory = mysql.createPool( {
   connectionLimit: 1000,
   connectTimeout: 60 * 60 * 1000,
   acquireTimeout: 60 * 60 * 1000,
@@ -49,11 +51,12 @@ const destinyInventory = mysql.createPool({
   database: process.env.PROSER_INVENTORY_DATABASE,
   multipleStatements: true,
   max_statement_time: 20,
-  connectionName: "destinyInventory"
-});
+  connectionName: "destinyInventory",
+  insecureAuth: true,
+} );
 
 // REPORTS
-const originInventory = mysql.createPool({
+const originInventory = mysql.createPool( {
   connectionLimit: 1000,
   connectTimeout: 60 * 60 * 1000,
   acquireTimeout: 60 * 60 * 1000,
@@ -64,94 +67,95 @@ const originInventory = mysql.createPool({
   database: process.env.PROSER_INVENTORY_DATABASE,
   multipleStatements: true,
   max_statement_time: 20,
-  connectionName: "destinyInventory"
-});
+  connectionName: "destinyInventory",
+  insecureAuth: true
+} );
 
 // Ping database to check for common exception errors.
-origin.getConnection((err, connection) => {
-  if (err) {
-    if (err.code === `PROTOCOL_CONNECTION_LOST`) {
-      console.error(`Database connection was closed.`);
+origin.getConnection( ( err, connection ) => {
+  if ( err ) {
+    if ( err.code === `PROTOCOL_CONNECTION_LOST` ) {
+      console.error( `Database connection was closed.` );
       return err.code;
     }
-    if (err.code === `ER_CON_COUNT_ERROR`) {
-      console.error(`Database has too many connections.`);
+    if ( err.code === `ER_CON_COUNT_ERROR` ) {
+      console.error( `Database has too many connections.` );
       return err.code;
     }
-    if (err.code === `ECONNREFUSED`) {
-      console.error(`Database connection was refused.`);
+    if ( err.code === `ECONNREFUSED` ) {
+      console.error( `Database connection was refused.` );
       return err.code;
     }
   }
 
   return;
-});
+} );
 
 // Ping database to check for common exception errors.
-destinyReports.getConnection((err, connection) => {
-  if (err) {
-    if (err.code === `PROTOCOL_CONNECTION_LOST`) {
-      console.error(`Database connection was closed.`);
+destinyReports.getConnection( ( err, connection ) => {
+  if ( err ) {
+    if ( err.code === `PROTOCOL_CONNECTION_LOST` ) {
+      console.error( `Database connection was closed.` );
       return err.code;
     }
-    if (err.code === `ER_CON_COUNT_ERROR`) {
-      console.error(`Database has too many connections.`);
+    if ( err.code === `ER_CON_COUNT_ERROR` ) {
+      console.error( `Database has too many connections.` );
       return err.code;
     }
-    if (err.code === `ECONNREFUSED`) {
-      console.error(`Database connection was refused.`);
+    if ( err.code === `ECONNREFUSED` ) {
+      console.error( `Database connection was refused.` );
       return err.code;
     }
   }
 
   return;
-});
+} );
 
 // Ping database to check for common exception errors.
-destinyInventory.getConnection((err, connection) => {
-  if (err) {
-    if (err.code === `PROTOCOL_CONNECTION_LOST`) {
-      console.error(`Database connection was closed.`);
+destinyInventory.getConnection( ( err, connection ) => {
+  if ( err ) {
+    if ( err.code === `PROTOCOL_CONNECTION_LOST` ) {
+      console.error( `Database connection was closed.` );
       return err.code;
     }
-    if (err.code === `ER_CON_COUNT_ERROR`) {
-      console.error(`Database has too many connections.`);
+    if ( err.code === `ER_CON_COUNT_ERROR` ) {
+      console.error( `Database has too many connections.` );
       return err.code;
     }
-    if (err.code === `ECONNREFUSED`) {
-      console.error(`Database connection was refused.`);
+    if ( err.code === `ECONNREFUSED` ) {
+      console.error( `Database connection was refused.` );
       return err.code;
     }
   }
 
   return;
-});
+} );
 
 // Ping database to check for common exception errors.
-originInventory.getConnection((err, connection) => {
-  if (err) {
-    if (err.code === `PROTOCOL_CONNECTION_LOST`) {
-      console.error(`Database connection was closed.`);
+originInventory.getConnection( ( err, connection ) => {
+  if ( err ) {
+    if ( err.code === `PROTOCOL_CONNECTION_LOST` ) {
+      console.error( `Database connection was closed.` );
       return err.code;
     }
-    if (err.code === `ER_CON_COUNT_ERROR`) {
-      console.error(`Database has too many connections.`);
+    if ( err.code === `ER_CON_COUNT_ERROR` ) {
+      console.error( `Database has too many connections.` );
       return err.code;
     }
-    if (err.code === `ECONNREFUSED`) {
-      console.error(`Database connection was refused.`);
+    if ( err.code === `ECONNREFUSED` ) {
+      console.error( `Database connection was refused.` );
       return err.code;
     }
   }
 
   return;
-});
+} );
 
 // Promisify for Node.js async/await.
-origin.query = util.promisify(origin.query);
-destinyReports.query = util.promisify(destinyReports.query);
-destinyInventory.query = util.promisify(destinyInventory.query);
-originInventory.query = util.promisify(originInventory.query);
+origin.query = util.promisify( origin.query );
+destinyReports.query = util.promisify( destinyReports.query );
+destinyInventory.query = util.promisify( destinyInventory.query );
+originInventory.query = util.promisify( originInventory.query );
 
 module.exports = {
   origin,
