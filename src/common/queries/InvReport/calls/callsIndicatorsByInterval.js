@@ -8,7 +8,8 @@ import {
   objectToJsonSqlQuery,
   arrayToJsonSqlQuery,
   sqlIntervalSqlQuery,
-  sqlIntervalGroupSqlQuery
+  sqlIntervalGroupSqlQuery,
+  sqlIntervalGroupSqlQueryToIndicators
 } from "../../../functions/sqlFunctions";
 
 /******************************************************************** */
@@ -17,6 +18,7 @@ export async function callsIndicatorsByIntervalReport(userSelection) {
   // DEFINE VARIABLES
   let result = {
     detail: [],
+    subtotal: [],
     total: []
   };
 
@@ -29,6 +31,49 @@ export async function callsIndicatorsByIntervalReport(userSelection) {
     result.detail = { errorDetail: error };
   }
 
+  /* SUBTOTAL ********************************* */
+  let querySubtotal= `
+  
+  SELECT
+    
+      now() AS now
+    ,'' as day_name
+    ,'' as week_day
+    ,daily.start_date AS start_date
+    ,'SUBTOTAL' AS interval_start
+    ,'' AS end_time
+    ,SUM(inboundReceived) AS inboundReceived
+    ,SUM(inboundAttended) AS inboundAttended
+    ,SUM(inboundBeforeTime) AS inboundBeforeTime
+    ,SUM(inboundBeforeMinute) AS inboundBeforeMinute
+    ,SUM(inboundBeforeTime)/SUM(inboundReceived) AS inboundServiceLevel
+    ,SUM(inboundBeforeMinute)/SUM(inboundReceived) AS inboundServiceLevelMinute
+    ,SUM(inboundAttended)/SUM(inboundReceived) AS inboundAttentionLevel
+    ,SUM(operationSeconds)/SUM(inboundAttended) AS inboundTmo
+    ,SUM(waitTimeAttended)/SUM(inboundAttended) AS avgWaitTimeAnswer
+    ,SUM(waitTimeAbandoned)/SUM(inboundAbandoned) AS avgWaitTimeAbandon
+    ,MAX(maxWaitTimeAnswer) as maxWaitTimeAnswer
+    ,MAX(maxWaitTimeAbandon) as maxWaitTimeAbandon
+    ,SUM(inboundAbandoned) AS inboundAbandoned
+    ,SUM(inboundAbandoned)/SUM(inboundReceived) AS inboundAbandonLevel
+
+    FROM
+        (
+          
+          ${query(userSelection)}  ) AS daily
+
+    GROUP BY
+      start_date
+    
+    `;
+  
+  try {
+    result.subtotal = await pool.destinyReports.query(querySubtotal);
+  } catch (error) {
+    result.subtotal = { errorDetail: error };
+  }
+
+
   /* TOTAL ********************************* */
   let queryTotal = `
     SELECT
@@ -36,6 +81,7 @@ export async function callsIndicatorsByIntervalReport(userSelection) {
     ,'' as day_name
     ,'' as week_day
     ,'' AS start_date
+    ,'TOTAL GENERAL' AS interval_start
     ,'' AS start_time
     ,'' AS end_time
     ,SUM(inboundReceived) AS inboundReceived
@@ -178,7 +224,10 @@ ${arrayToJsonSqlQuery(userSelection.service, "callentry_operation_json", "servic
  -- CAMPAIGN
  ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
 
-${sqlIntervalGroupSqlQuery(userSelection)}
+ GROUP BY
+ 
+start_date
+${sqlIntervalGroupSqlQueryToIndicators(userSelection)}
 
 
 -- ---------------------------------------------------------------

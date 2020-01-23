@@ -268,6 +268,22 @@ export function sqlIntervalGroupSqlQuery(userSelection) {
   return result;
 }
 
+/**************************************************** */
+
+export function sqlIntervalGroupSqlQueryToIndicators(userSelection) {
+  /*
+   * Send the group string if interval applies
+   */
+  let result = "";
+
+  let interval_text =
+    userSelection.interval !== null ? ",interval_init" : "";
+
+  result = interval_text;
+
+  return result;
+}
+
 
 
 /************************************************************** */
