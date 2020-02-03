@@ -205,5 +205,13 @@
   "Employee": {
     "dataSource": "proserInventory",
     "public": true
+  },
+  "AgentPlan": {
+    "dataSource": "proserInventory",
+    "public": true
+  },
+  "AgentException": {
+    "dataSource": "proserInventory",
+    "public": true
   }
 }
