@@ -341,51 +341,22 @@ async function agentsPlannedTotalFunction(userSelection) {
   
   -- TIME & INTERVAL
      now() as now
-     ,COUNT(hca_agent_id) as agentsPlannedTotal
+     ,COUNT(agent_plan_agent_id) as agentsPlannedTotal
   
       FROM
-          HcaAgent
+          AgentPlan
          
           -- ---------------------------------------------------------------
           -- CONDITIONS
           WHERE 1
           
           -- TIME AND DATE
-          ${dateAndTimeSqlQuery(userSelection, "hca_agent_date")}
+          ${dateAndTimeSqlQuery(userSelection, "agent_plan_date")}
           
-          -- AGENT
-          ${arrayToSqlQuery(userSelection.agent, "hca_agent_id")}
-          
-          -- SUPERVISOR
-          ${objectToJsonSqlQuery(userSelection.supervisor, "hca_agent_people_json", "supervisor")}
-  
-          -- SCHEDULE
-          ${objectToJsonSqlQuery(userSelection.client, "hca_agent_time_json", "schedule")}
-  
-          -- ROLE
-          ${objectToJsonSqlQuery(userSelection.client, "hca_agent_people_json", "role")}
-  
-          -- CLIENT
-          ${arrayToJsonSqlQuery(userSelection.client, "hca_agent_operation_json", "client")}
-  
-          -- QUEUE
-          ${arrayToJsonSqlQuery(userSelection.queue, "hca_agent_operation_json", "queue")}
-  
-          -- SERVICE
-          ${arrayToJsonSqlQuery(userSelection.service, "callentry_operation_json", "service")}
-  
-          -- CAMPAIGN
-          ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
-          
-          -- BREAK
-          -- ASIGNACION
-  
-          GROUP BY hca_agent_date
           -- END ----------------------------------------------------------
         `;
-
   try {
-    let temp = await pool.destinyReports.query(query);
+    let temp = await pool.destinyInventory.query(query);
     return temp.length < 1 ? result : temp;
   } catch (error) {
     return (result = { error: error });

@@ -432,7 +432,7 @@ ${arrayToSqlQuery( userSelection.campaign, "rcc_callentry_campaign_id" ) }
 
 /**************************************** */
 // Agents planned
-async function agentsPlannedTotalFunction ( userSelection ) {
+async function agentsPlannedTotalFunction(userSelection) {
   let result = [
     {
       now: "",
@@ -442,83 +442,30 @@ async function agentsPlannedTotalFunction ( userSelection ) {
   let resume_error = false;
   let query = `
   -- agentsPlannedTotalFunction ----------
--- FIELDS
-SELECT
-
--- TIME & INTERVAL
-   now() as now
-   ,COUNT(hca_agent_id) as agentsPlannedTotal
-
-    FROM
-        HcaAgent
-       
-        -- ---------------------------------------------------------------
-        -- CONDITIONS
-        WHERE 1
-
-        AND hca_agent_status = 'A'
-        
-        
-        -- AGENT
-        ${arrayToSqlQuery( userSelection.agent, "hca_agent_id" ) }
-        
-        -- SUPERVISOR
-        ${objectToJsonSqlQuery(
-    userSelection.supervisor,
-    "hca_agent_people_json",
-    "supervisor"
-  ) }
-
-        -- SCHEDULE
-        ${objectToJsonSqlQuery(
-    userSelection.client,
-    "hca_agent_time_json",
-    "schedule"
-  ) }
-
-        -- ROLE
-        ${objectToJsonSqlQuery(
-    userSelection.client,
-    "hca_agent_people_json",
-    "role"
-  ) }
-
-        -- CLIENT
-        ${arrayToJsonSqlQuery(
-    userSelection.client,
-    "hca_agent_operation_json",
-    "client"
-  ) }
-
-        -- QUEUE
-        ${arrayToJsonSqlQuery(
-    userSelection.queue,
-    "hca_agent_operation_json",
-    "queue"
-  ) }
-
-        -- SERVICE
-        ${arrayToJsonSqlQuery(
-    userSelection.service,
-    "callentry_operation_json",
-    "service"
-  ) }
-
-        -- CAMPAIGN
-        ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
-        
-        -- BREAK
-        -- ASIGNACION
-
-        GROUP BY hca_agent_date
-        -- END ----------------------------------------------------------
+  -- FIELDS
+  SELECT
+  
+  -- TIME & INTERVAL
+     now() as now
+     ,COUNT(agent_plan_agent_id) as agentsPlannedTotal
+  
+      FROM
+          AgentPlan
+         
+          -- ---------------------------------------------------------------
+          -- CONDITIONS
+          WHERE 1
+          
+          -- TIME AND DATE
+          ${dateAndTimeSqlQuery(userSelection, "agent_plan_date")}
+          
+          -- END ----------------------------------------------------------
         `;
-
   try {
-    let temp = await pool.destinyReports.query( query );
+    let temp = await pool.destinyInventory.query(query);
     return temp.length < 1 ? result : temp;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
