@@ -506,8 +506,8 @@ module.exports = function ( InvReport ) {
 
   //**********************EXTRACT RECORDING FILE**********************/
 
-  InvReport.callsGetRecordingFile = async function ( userSelection ) {
-    return callsRecordingFile.callsGetRecordingFile( userSelection );
+  InvReport.callsGetRecordingFile = async function ( RecordSelection ) {
+    return callsRecordingFile.callsGetRecordingFile( RecordSelection );
   };
 
   InvReport.remoteMethod( "callsGetRecordingFile", {
