@@ -21,7 +21,7 @@ export async function invScheduleDayCrudInsert(data) {
     console.log("*****************");
     console.log("querySQL", querySQL);
 
-    result = await pool.destinyReports.query(querySQL);
+    result = await pool.destinyInventory.query(querySQL);
 
     console.log("*****************");
     console.log("result", result);
