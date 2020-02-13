@@ -45,14 +45,14 @@ import { transformRealAgents } from "../transform/real/real-agents/transform_rea
 import { transformRealBreaks } from "../transform/real/real-breaks/transform_realbreaks";
 import { transformRealCalls } from "../transform/real/real-calls/transform_realcalls";
 
-import { exportSms } from "../sms/smsExecute"
+import { exportSms } from "../sms/smsExecute";
 
 
-let input_date = process.argv[ 2 ]
+let input_date = process.argv[ 2 ];
 let incoming_date = input_date === '' ? '' : process.argv[ 2 ];
 const chalk = require( "chalk" );
 
-let min_date = executeMinOriginDate()
+let min_date = executeMinOriginDate();
 
 async function extractAll ( incoming_date ) {
   console.log( "" );
@@ -199,7 +199,7 @@ async function extractAll ( incoming_date ) {
   console.log( "" );
 
 
-  await exportSms( input_date )
+  await exportSms( input_date );
 
   console.log( "" );
   console.log(
@@ -220,8 +220,8 @@ async function executeMinOriginDate () {
     let getQuery = await pool.origin.query( querySQL );
     let preresult = removeRowDataPacket( getQuery );
     let longDate = Array.isArray( preresult ) && preresult.length > 0 ? preresult[ 0 ].min_date : '';
-    result = moment( longDate ).format( 'YYYY-MM-DD' )
-    return result
+    result = moment( longDate ).format( 'YYYY-MM-DD' );
+    return result;
   } catch ( error ) {
     result = { error: error };
     console.log( "Error load-day", error );

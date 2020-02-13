@@ -3,7 +3,7 @@ import { removeRowDataPacket } from "../../helpers/mysql-helper.js";
 import moment from "moment";
 
 // Read actual records
-async function eraseTestData() {
+async function eraseRealData() {
   let result = null;
 
   let querySQL = `
@@ -34,9 +34,14 @@ async function erase() {
   console.log(
     `***********  REAL TABLES ERASED ${pool.destinyReports.config.connectionConfig.database} ***********`
   );
-  await eraseTestData();
+  await eraseRealData();
   console.log("All Erased");
   process.exit(0);
 }
 
 erase();
+
+
+module.exports = {
+  eraseRealData
+};
