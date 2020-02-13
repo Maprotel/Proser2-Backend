@@ -12,6 +12,7 @@ import * as dashboardInboundListCurrentAgents from "../queries/InvDashboard/dash
 import * as dashboardInboundListCurrentBreaks from "../queries/InvDashboard/dashboardInbound/dashboard-inbound-list/dashboard-inbound-list-currentBreaks";
 import * as dashboardInboundListAuditAgents from "../queries/InvDashboard/dashboardInbound/dashboard-inbound-list/dashboard-inbound-list-auditAgents";
 import * as dashboardInboundListAuditBreaks from "../queries/InvDashboard/dashboardInbound/dashboard-inbound-list/dashboard-inbound-list-auditBreaks";
+import * as dashboardInboundListPlanAgents from "../queries/InvDashboard/dashboardInbound/dashboard-inbound-list/dashboard-inbound-list-planAgents";
 
 
 import * as dashboardInboundListCallEntryRealTime from "../queries/InvDashboard/dashboardInbound/dashboard-inbound-list/dashboard-inbound-list-callentryRealTime";
@@ -35,6 +36,7 @@ import * as dashboardOutboundListCurrentAgents from "../queries/InvDashboard/das
 import * as dashboardOutboundListCurrentBreaks from "../queries/InvDashboard/dashboardOutbound/dashboard-outbound-list/dashboard-outbound-list-currentBreaks";
 import * as dashboardOutboundListAuditAgents from "../queries/InvDashboard/dashboardOutbound/dashboard-outbound-list/dashboard-outbound-list-auditAgents";
 import * as dashboardOutboundListAuditBreaks from "../queries/InvDashboard/dashboardOutbound/dashboard-outbound-list/dashboard-outbound-list-auditBreaks";
+import * as dashboardOutboundListPlanAgents from "../queries/InvDashboard/dashboardOutbound/dashboard-outbound-list/dashboard-outbound-list-planAgents";
 
 // AUTOMATIC
 import * as automaticsIndicators from "../queries/InvDashboard/automatics/automaticsIndicators";
@@ -180,6 +182,24 @@ module.exports = function(InvDashboard) {
   InvDashboard.remoteMethod("dashboardInboundListAuditBreaks", {
     accepts: {
       arg: "dashboardSelection",
+      type: "any",
+      http: { source: "body" }
+    },
+    returns: { type: "array", root: "true" },
+    description: ["List of abandoned calls"]
+  });
+
+  //**********************INBOUND LIST PLAN-AGENTS**********************/
+
+  InvDashboard.dashboardInboundListPlanAgents = async function(userSelection) {
+    return dashboardInboundListPlanAgents.dashboardInboundListPlanAgents(
+      userSelection
+    );
+  };
+
+  InvDashboard.remoteMethod("dashboardInboundListPlanAgents", {
+    accepts: {
+      arg: "userSelection",
       type: "any",
       http: { source: "body" }
     },
@@ -563,6 +583,24 @@ module.exports = function(InvDashboard) {
   InvDashboard.remoteMethod("dashboardOutboundListAuditBreaks", {
     accepts: {
       arg: "dashboardSelection",
+      type: "any",
+      http: { source: "body" }
+    },
+    returns: { type: "array", root: "true" },
+    description: ["List of abandoned calls"]
+  });
+
+  //**********************OUTBOUND LIST PLAN-AGENTS**********************/
+
+  InvDashboard.dashboardOutboundListPlanAgents = async function(userSelection) {
+    return dashboardOutboundListPlanAgents.dashboardOutboundListPlanAgents(
+      userSelection
+    );
+  };
+
+  InvDashboard.remoteMethod("dashboardOutboundListPlanAgents", {
+    accepts: {
+      arg: "userSelection",
       type: "any",
       http: { source: "body" }
     },

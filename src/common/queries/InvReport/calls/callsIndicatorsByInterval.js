@@ -133,7 +133,7 @@ now() AS now
 
   ,DATE_FORMAT(callentry_date, "%Y-%m-%d") AS start_date
   
-  ,MIN(DATE_FORMAT(callentry_datetime_init, '%H:%i:%s')) AS start_time
+  ,MIN(DATE_FORMAT(callentry_datetime_entry_queue, '%H:%i:%s')) AS start_time
   
   ,MAX(DATE_FORMAT(callentry_datetime_end, '%H:%i:%s')) AS end_time
   
