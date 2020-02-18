@@ -81,6 +81,7 @@
     "serve-favicon": "^2.0.1",
     "set-interval-async": "1.0.26",
     "shelljs": "^0.8.3",
+    "sox": "^0.1.0",
     "strong-error-handler": "^3.4.0",
     "supertest": "^3.4.2"
   },

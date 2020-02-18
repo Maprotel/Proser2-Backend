@@ -6,18 +6,6 @@ var path = require( "path" );
 
 export async function callsGetRecordingFile ( RecordSelection ) {
 
-  console.log( 'RecordSelection', RecordSelection );
-
-  return 'ok'
-
-}
-
-
-export async function callsGetRecordingFileOk ( RecordSelection ) {
-
-  console.log( 'RecordSelection', RecordSelection );
-
-
   const mp3Name = `${ RecordSelection.call_type }-${ RecordSelection.agent_name }-${ RecordSelection.start_date }-${ RecordSelection.start_time }.mp3`;
 
   const passwordFile = `.hostInfo`;
@@ -29,7 +17,7 @@ export async function callsGetRecordingFileOk ( RecordSelection ) {
 
   const destinyFileName = path.basename( RecordSelection.record );
 
-  let getFile = `sshpass -f "${ passwordFile }" scp -r ${ originFilePath }${ originFileName } ${ destinyFilePath }${ destinyFileName }`;
+  let getFile = `scp ${ originFilePath }${ originFileName } ${ destinyFilePath }${ destinyFileName }`;
 
   let convertFile = `sox ${ destinyFilePath }${ destinyFileName } ${ destinyFilePath }${ destinyFileName }.mp3`;
 
@@ -47,7 +35,9 @@ export async function callsGetRecordingFileOk ( RecordSelection ) {
   }
 
   return result;
+
 }
+
 
 export async function deleteRecordingFile ( RecordSelection ) {
   let result;

@@ -24,12 +24,7 @@
   "validations": [],
   "relations": {},
   "acls": [
-    {
-      "accessType": "*",
-      "principalType": "ROLE",
-      "principalId": "Administrator",
-      "permission": "ALLOW"
-    }
+
   ],
   "methods": {}
 }

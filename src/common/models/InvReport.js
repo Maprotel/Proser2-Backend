@@ -522,8 +522,8 @@ module.exports = function ( InvReport ) {
 
   //**********************DELETE RECORDING FILE**********************/
 
-  InvReport.deleteRecordingFile = async function ( userSelection ) {
-    return callsRecordingFile.deleteRecordingFile( userSelection );
+  InvReport.deleteRecordingFile = async function ( RecordSelection ) {
+    return callsRecordingFile.deleteRecordingFile( RecordSelection );
   };
 
   InvReport.remoteMethod( "deleteRecordingFile", {
