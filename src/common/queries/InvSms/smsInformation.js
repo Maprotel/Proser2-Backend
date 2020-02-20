@@ -50,32 +50,7 @@ ON JSON_EXTRACT(inv_queue_system_json, "$.scale.id") = inv_scale_id
 WHERE 1
 
 -- TIME AND DATE
-${dateAndTimeSqlQuery(userSelection, "callentry_datetime_init")}
-
--- AGENT
-${arrayToSqlQuery(userSelection.agent, "callentry_agent_id")}
-
--- SUPERVISOR
-${objectToJsonSqlQuery(userSelection.supervisor, "callentry_people_json", "supervisor")}
-
--- SCHEDULE
-${objectToJsonSqlQuery(userSelection.client, "callentry_time_json", "schedule")}
-
--- ROLE
-${objectToJsonSqlQuery(userSelection.client, "callentry_people_json", "role")}
-
--- CLIENT
-${arrayToJsonSqlQuery(userSelection.client, "callentry_operation_json", "client")}
-
--- QUEUE
-${arrayToSqlQuery(userSelection.queue, "callentry_queue_id")}
-
--- SERVICE
-${arrayToJsonSqlQuery(userSelection.service, "callentry_operation_json", "service")}
-
--- CAMPAIGN
-${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
-
+${dateAndTimeSqlQuery(userSelection, "callentry_datetime_entry_queue")}
 
 
 GROUP BY inv_queue_sms_name 

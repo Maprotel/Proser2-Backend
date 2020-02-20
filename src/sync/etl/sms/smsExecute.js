@@ -53,7 +53,7 @@ ON JSON_EXTRACT(inv_queue_system_json, "$.scale.id") = inv_scale_id
 WHERE 1
 
 -- TIME AND DATE
-AND DATE(callentry_datetime_init)= '${date }'
+AND DATE(callentry_datetime_entry_queue)= '${date }'
 
 
 

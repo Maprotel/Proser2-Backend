@@ -1,0 +1,1 @@
+Fecha:2020-02-20,Hora:09:09:43,Cola:Ubiipagos,Recibidas:141,Atendidas:46,NS:4.26%,Meta:null
