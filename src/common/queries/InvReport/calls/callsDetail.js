@@ -29,8 +29,8 @@ now() as now
 ,cdr_id as cdr_id
 ,cdr_uniqueid as cdr_uniqueid
 ,cdr_agent_id as agent_id
-,inv_agent_name as agent_name
-,JSON_UNQUOTE(JSON_EXTRACT(cdr_people_json, "$[0].agent[0].extension")) as agent_extension
+,IF(cdr_call_type = "outbound", cdr_cnam, inv_agent_name) as agent_name
+,cdr_agent_extension as agent_extension
 ,IF(cdr_dcontext = 'from-internal-xfer', 'xfer', '') as agent_transfer
 ,JSON_UNQUOTE(JSON_EXTRACT(JSON_EXTRACT(inv_agent_people_json, '$.supervisor.name'), '$[0]')) as agent_supervisor_name
 ,DATE_FORMAT(cdr_date, '%Y-%m-%d') as start_date

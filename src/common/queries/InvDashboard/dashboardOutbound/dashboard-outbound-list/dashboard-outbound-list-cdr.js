@@ -37,7 +37,7 @@ export async function dashboardOutboundListCdrFunction(DashboardSelection) {
   
     DATE_FORMAT(cdr_calldate, "%Y-%m-%d") as call_date
     ,TIME(cdr_calldate) as call_time
-    ,inv_agent_name as agent_name
+    ,cdr_cnam as agent_name
     ,cdr_dst as destiny_number
     ,cdr_duration_sec as duration_sec
     ,SEC_TO_TIME(cdr_duration_sec) AS duration_time
@@ -103,7 +103,7 @@ export async function dashboardOutboundListCdrFunction(DashboardSelection) {
    -- END ---------------------------------------------------------------
 
   `;
-
+  
   try {
     result = await pool.destinyReports.query(query);
     return result;
