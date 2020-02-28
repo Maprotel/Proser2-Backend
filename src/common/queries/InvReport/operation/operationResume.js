@@ -15,7 +15,7 @@ import { objectDateToTextDate } from "../../../functions/dateFunctions";
 
 /******************************************************************** */
 
-export async function operationConsolidateOperationReport(userSelection) {
+export async function operationResumeReport(userSelection) {
  
   let result = "";
 
@@ -42,6 +42,9 @@ export async function operationConsolidateOperationReport(userSelection) {
   , outbound_internal_sec
   , outbound_internal_time
   , outbound_internal_sec/login_duration_sec as internal_percent
+  , (inbound_attended_duration_sec + outbound_made_sec)/
+  (inbound_calls_attended + outbound_calls_made) as tmo
+  , SEC_TO_TIME(inbound_attended_duration_sec + outbound_made_sec) as time_conversation
   , hung_agent as hung_by_agent
   , auxiliar_duration_sec
   , auxiliar_duration_time
@@ -58,7 +61,7 @@ export async function operationConsolidateOperationReport(userSelection) {
       (${preFinalQuery(userSelection)}) as MAIN
 
     GROUP BY 
-      agent_id
+      agent_name
   `;
 
   
@@ -110,7 +113,7 @@ FROM
 
 
 GROUP BY 
-    agent_id
+    agent_name
 
 
 `;
@@ -199,7 +202,7 @@ ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
 ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
 
 
-GROUP BY agent_id
+GROUP BY agent_name
 
 -- ---------------------------------------------------------------
 -- END
@@ -257,7 +260,7 @@ ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
 ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
 
 
-GROUP BY agent_id
+GROUP BY agent_name
 
 -- ---------------------------------------------------------------
 -- END
@@ -315,7 +318,7 @@ ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
 ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
 
 
-GROUP BY agent_id
+GROUP BY agent_name
 
 -- ---------------------------------------------------------------
 -- END
@@ -331,8 +334,8 @@ SELECT
 -- TIME & INTERVAL
 
 DATE_FORMAT(cdr_calldate, '%Y-%m-%d') as base_date
-, cdr_agent_id as agent_id
-, inv_agent_name as agent_name
+, cdr_cnum as agent_id
+, cdr_cnam as agent_name
 -- SAME DATA IN ALL
 ,null as login_duration_sec
 ,null as inbound_calls_attended
@@ -352,7 +355,7 @@ FROM
 
 MainCdr
 LEFT OUTER JOIN InvAgent
-ON cdr_agent_id = inv_agent_id
+ON cdr_cnum = inv_agent_extension
 
 LEFT OUTER JOIN InvQueue
 ON cdr_queue_id = inv_queue_id
@@ -367,8 +370,7 @@ WHERE 1
 
 AND
 cdr_call_made = 1
-AND
-cdr_agent_id is not null
+
 
 -- TIME AND DATE
 ${dateAndTimeSqlQuery(userSelection, "cdr_calldate")}
@@ -377,7 +379,7 @@ ${dateAndTimeSqlQuery(userSelection, "cdr_calldate")}
 ${arrayToSqlQuery(userSelection.agent, "cdr_agent_id")}
 
 
-GROUP BY base_date
+GROUP BY agent_name
 
 -- ---------------------------------------------------------------
 -- END
@@ -432,7 +434,7 @@ ${dateAndTimeSqlQuery(userSelection, "callentry_datetime_init")}
 ${arrayToSqlQuery(userSelection.agent, "callentry_agent_id")}
 
 
-GROUP BY agent_id
+GROUP BY agent_name
 
 -- ---------------------------------------------------------------
 -- END

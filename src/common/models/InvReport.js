@@ -26,7 +26,7 @@ import * as callsAbandoned from "../queries/InvReport/calls/callsAbandoned";
 
 import * as operationDetailOperation from "../queries/InvReport/operation/operationDetailOperation";
 import * as operationConsolidateOperation from "../queries/InvReport/operation/operationConsolidateOperation";
-import * as operationProductivity from "../queries/InvReport/operation/operationProductivity";
+import * as operationResume from "../queries/InvReport/operation/operationResume";
 import * as multipleQueries from "../queries/InvReport/operation/multipleQueries";
 
 import * as callsRecordingFile from "../queries/InvReport/calls/callsRecordingFile";
@@ -393,20 +393,20 @@ module.exports = function ( InvReport ) {
     description: [ "Returns values of detail operation report" ]
   } );
 
-  //**********************REMOTE METHOD PRODUCTIVITY REPORT**********************/
+  //**********************REMOTE METHOD RESUME REPORT**********************/
 
-  InvReport.operationProductivityReport = async function ( userSelection ) {
-    return operationProductivity.operationProductivityReport( userSelection );
+  InvReport.operationResumeReport = async function ( userSelection ) {
+    return operationResume.operationResumeReport( userSelection );
   };
 
-  InvReport.remoteMethod( "operationProductivityReport", {
+  InvReport.remoteMethod( "operationResumeReport", {
     accepts: {
       arg: "userSelection",
       type: "UserSelection",
       http: { source: "body" }
     },
     returns: { type: "array", root: "true" },
-    description: [ "Returns values of productivity report" ]
+    description: [ "Returns values of Resume report" ]
   } );
 
   //***************************INBOUND GROUP REPORT - REMOTE METHOD*********************************/
