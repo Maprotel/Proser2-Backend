@@ -23,7 +23,7 @@ export async function operationResumeReport(userSelection) {
   SELECT
 
   base_date
-  , agent_id
+  
   , agent_name
   ,'${objectDateToTextDate(userSelection.start_date)}' as min_date
   ,'${objectDateToTextDate(userSelection.end_date)}' as max_date
@@ -64,7 +64,6 @@ export async function operationResumeReport(userSelection) {
       agent_name
   `;
 
-  
   try {
     let resultPre = await pool.destinyReports.query(query);
     result = resultPre;
@@ -113,7 +112,7 @@ FROM
 
 
 GROUP BY 
-    agent_name
+agent_name
 
 
 `;
@@ -310,6 +309,8 @@ AND
 audit_break_id is not null
 AND
 inv_break_productivity = 1
+AND
+inv_break_name <> 'Realizar Llamadas'
 
 -- TIME AND DATE
 ${dateAndTimeSqlQuery(userSelection, "audit_datetime_init")}
@@ -370,6 +371,7 @@ WHERE 1
 
 AND
 cdr_call_made = 1
+
 
 
 -- TIME AND DATE
