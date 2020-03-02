@@ -31,7 +31,6 @@ export async function displayMonitorByCalls(userSelection) {
       ${query(userSelection)}
   `;
 
-  
   try {
     result.detail = await pool.destinyReports.query(queryDetail);
   } catch (error) {
