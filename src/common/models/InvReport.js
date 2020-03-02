@@ -21,6 +21,7 @@ import * as callsAutomaticDaily from "../queries/InvReport/calls/callsAutomaticD
 import * as callsAutomaticByIntervalDaily from "../queries/InvReport/calls/callsAutomaticDailyByInterval";
 import * as callsWaitTime from "../queries/InvReport/calls/callsWaitTime";
 import * as callsIndicatorsByInterval from "../queries/InvReport/calls/callsIndicatorsByInterval";
+import * as callsIndicatorsByQueue from "../queries/InvReport/calls/callsIndicatorsByQueue";
 
 import * as callsAbandoned from "../queries/InvReport/calls/callsAbandoned";
 
@@ -235,6 +236,26 @@ module.exports = function ( InvReport ) {
     description: [ "Returns values of inbound daily by interval report" ]
   } );
 
+
+  //**********************REMOTE METHOD INBOUND DAILY BY QUEUE REPORT**********************/
+
+  InvReport.callsInboundDailyByQueueReport = async function ( userSelection ) {
+    return callsInboundDailyByQueue.callsInboundDailyByQueueReport(
+      userSelection
+    );
+  };
+  
+  InvReport.remoteMethod( "callsInboundDailyByQueueReport", {
+    accepts: {
+      arg: "userSelection",
+      type: "UserSelection",
+      http: { source: "body" }
+    },
+    returns: { type: "array", root: "true" },
+    description: [ "Returns values of inbound daily by queue report" ]
+  } );
+
+    
   //**********************REMOTE METHOD OUTBOUND DAILY REPORT**********************/
 
   InvReport.callsOutboundDailyReport = async function ( userSelection ) {
@@ -351,6 +372,22 @@ module.exports = function ( InvReport ) {
     },
     returns: { type: "array", root: "true" },
     description: [ "Returns values of calls indicators by interval" ]
+  } );
+
+  //**********************REMOTE METHOD CALLS INDICATORS BY QUEUE**********************/
+
+  InvReport.callsIndicatorsByQueueReport = async function ( userSelection ) {
+    return callsIndicatorsByQueue.callsIndicatorsByQueueReport( userSelection );
+  };
+
+  InvReport.remoteMethod( "callsIndicatorsByQueueReport", {
+    accepts: {
+      arg: "userSelection",
+      type: "UserSelection",
+      http: { source: "body" }
+    },
+    returns: { type: "array", root: "true" },
+    description: [ "Returns values of calls indicators by queue" ]
   } );
 
   //*****************************OPERATION REPORT*******************************/

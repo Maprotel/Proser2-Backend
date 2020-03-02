@@ -1,1 +1,1 @@
-Fecha:2020-02-20,Hora:08:23:23,Cola:null,Recibidas:14,Atendidas:14,NS:42.86%,Meta:null
+Fecha:2020-02-28,Hora:12:59:44,Cola:null,Recibidas:403,Atendidas:327,NS:76.43%,Meta:null
