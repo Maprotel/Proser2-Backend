@@ -341,17 +341,17 @@ async function agentsPlannedTotalFunction(userSelection) {
   
   -- TIME & INTERVAL
      now() as now
-     ,COUNT(agent_plan_agent_id) as agentsPlannedTotal
+     ,COUNT(hca_agent_id) as agentsPlannedTotal
   
       FROM
-          AgentPlan
+          HcaAgent
          
           -- ---------------------------------------------------------------
           -- CONDITIONS
           WHERE 1
           
           -- TIME AND DATE
-          ${dateAndTimeSqlQuery(userSelection, "agent_plan_date")}
+          ${dateAndTimeSqlQuery(userSelection, "hca_agent_date")}
           
           -- END ----------------------------------------------------------
         `;

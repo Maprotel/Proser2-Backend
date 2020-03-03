@@ -50,7 +50,7 @@ export async function dashboardInboundListCurrentCallsRealTime(
     ,rcc_callentry_status as call_status
     ,SEC_TO_TIME(rcc_callentry_duration_sec) AS duration_time
     ,inv_agent_name as agent_name
-    ,JSON_UNQUOTE(JSON_EXTRACT(rcc_operation_json, "$[0].name") ) as queue
+    ,inv_queue_name as queue
   
     -- ---------------------------------------------------------------
     -- TABLES & JOINS
@@ -130,7 +130,7 @@ export async function dashboardInboundListCurrentCallsRealTime(
    -- END ---------------------------------------------------------------
 
   `;
-
+console.log(query);
   try {
     result = await pool.destinyReports.query(query);
     return result;
