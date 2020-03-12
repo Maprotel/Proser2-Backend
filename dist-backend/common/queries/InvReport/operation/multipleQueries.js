@@ -1,0 +1,94 @@
+"use strict";
+
+var _interopRequireWildcard = require("@babel/runtime/helpers/interopRequireWildcard");
+
+var _interopRequireDefault = require("@babel/runtime/helpers/interopRequireDefault");
+
+Object.defineProperty(exports, "__esModule", {
+  value: true
+});
+exports.multipleQueries = multipleQueries;
+
+var _regenerator = _interopRequireDefault(require("@babel/runtime/regenerator"));
+
+var _asyncToGenerator2 = _interopRequireDefault(require("@babel/runtime/helpers/asyncToGenerator"));
+
+var pool = _interopRequireWildcard(require("../../../../connectors/pool"));
+
+var _sqlFunctions = require("../../../functions/sqlFunctions");
+
+// import userSelectionFilters from "../../InvMenu/userSelection/userSelectionFilters";
+
+/******************************************************************** */
+function multipleQueries(_x) {
+  return _multipleQueries.apply(this, arguments);
+}
+
+function _multipleQueries() {
+  _multipleQueries = (0, _asyncToGenerator2["default"])(
+  /*#__PURE__*/
+  _regenerator["default"].mark(function _callee(userSelection) {
+    var result, query, resultPre;
+    return _regenerator["default"].wrap(function _callee$(_context) {
+      while (1) {
+        switch (_context.prev = _context.next) {
+          case 0:
+            result = "";
+            query = "\n\nSELECT\ninv_agent_id as agent_id\n,inv_agent_name as agent_name\n,inv_agent_legal_id as agent_legal_id\n,inv_agent_internal_id as agent_internal_id\n,CONNECT.login_duration_sec\n,CONNECT.login_duration_time\n,AUXILIAR.aux_start_date as aux_start_date\n,AUXILIAR.aux_end_date as aux_end_date\n,AUXILIAR.aux_hold_sec\n,AUXILIAR.aux_hold_time\n,AUXILIAR.aux_bano_sec\n,AUXILIAR.aux_bano_time\n,AUXILIAR.aux_descanso_sec\n,AUXILIAR.aux_descanso_time\n,AUXILIAR.aux_reunion_sec\n,AUXILIAR.aux_reunion_time\n,AUXILIAR.aux_curso_sec\n,AUXILIAR.aux_curso_time\n,ASSIGNATION.aux_start_date\n,ASSIGNATION.aux_end_date\n,ASSIGNATION.asig_llamadas_salientes_sec\n,ASSIGNATION.asig_llamadas_salientes_time\n,ASSIGNATION.asig_rrss_sec\n,ASSIGNATION.asig_rrss_time\n,ASSIGNATION.asig_calidad_sec\n,ASSIGNATION.asig_calidad_time\n\nFROM InvAgent\n\nLEFT OUTER JOIN\n(".concat(auditConecctionQuery(userSelection), ") as CONNECT\n ON inv_agent_id = CONNECT.audit_agent_id\n\nLEFT OUTER JOIN\n(").concat(cdrQuery(userSelection), ") as CDR\nON inv_agent_id = CDR.cdr_agent_id\n\nLEFT OUTER JOIN\n(").concat(callentryQuery(userSelection), ") as CALLENTRY\nON inv_agent_id = CALLENTRY.callentry_agent_id\n\nLEFT OUTER JOIN\n(").concat(auditAuxiliarQuery(userSelection), ") as AUXILIAR\n ON inv_agent_id = AUXILIAR.audit_agent_id\n\n LEFT OUTER JOIN\n(").concat(auditAssignationQuery(userSelection), ") as ASSIGNATION\n ON inv_agent_id = ASSIGNATION.audit_agent_id\n\nGROUP BY inv_agent_id\n\n\n");
+            _context.prev = 2;
+            _context.next = 5;
+            return pool.destinyReports.query(query);
+
+          case 5:
+            resultPre = _context.sent;
+            result = resultPre;
+            _context.next = 12;
+            break;
+
+          case 9:
+            _context.prev = 9;
+            _context.t0 = _context["catch"](2);
+            result = {
+              error: _context.t0
+            };
+
+          case 12:
+            return _context.abrupt("return", result);
+
+          case 13:
+          case "end":
+            return _context.stop();
+        }
+      }
+    }, _callee, null, [[2, 9]]);
+  }));
+  return _multipleQueries.apply(this, arguments);
+}
+
+function auditConecctionQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\naudit_agent_id\n,count(audit_agent_id) AS COUNT_audit_agent_id\n,IF(audit_datetime_end is null, SUM(TIMESTAMPDIFF(second,audit_datetime_init,now())), SUM(audit_duration_sec)) as login_duration_sec\n,SEC_TO_TIME(IF(audit_datetime_end is null, SUM(TIMESTAMPDIFF(second,audit_datetime_init,now())), SUM(audit_duration_sec))) as login_duration_time\n\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\nMainAudit\nLEFT OUTER JOIN InvAgent\nON audit_agent_id = inv_agent_id\n\nLEFT OUTER JOIN InvBreak\nON audit_break_id = inv_break_id\n\nLEFT OUTER JOIN HcaAgent\nON audit_agent_id = hca_agent_id\nAND audit_date = hca_agent_date\n\n-- ---------------------------------------------------------------\n-- CONDITIONS\nWHERE 1\n\nAND\naudit_break_id is null\n\n-- TIME AND DATE\n".concat((0, _sqlFunctions.dateAndTimeSqlQuery)(userSelection, "audit_datetime_init"), "\n\n-- AGENT\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.agent, "hca_agent_id"), "\n\n-- SUPERVISOR\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.supervisor, "hca_agent_people_json"), "\n\n-- SCHEDULE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_schedule_json"), "\n\n-- ROLE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_role_json"), "\n\n-- CLIENT\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.client, "audit_operation_json", "client"), "\n\n-- QUEUE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.queue, "audit_operation_json", "queue"), "\n\n-- SERVICE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.service, "audit_operation_json", "service"), "\n\n-- CAMPAIGN\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.campaign, "audit_operation_json", "campaign"), "\n\n-- BREAK\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.auxiliar, "audit_break_id"), "\n\n-- ASIGNACION\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.assignation, "audit_break_id"), "\n\n-- PLANNED CLIENT\n\n\n-- PLANNED QUEUE\n\n\n-- PLANNED SERVICE\n\n\n-- PLANNED CAMPAIGN\n\n\nGROUP BY audit_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n ");
+}
+
+function auditAuxiliarQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\nFULLTIME_AUX.audit_agent_id\n,FULLTIME_AUX.start_date as aux_start_date\n,FULLTIME_AUX.end_date as aux_end_date\n,IF(FULLTIME_AUX.audit_break_id = 1, SUM(full_duration_sec), 0) as aux_hold_sec\n,SEC_TO_TIME(IF(FULLTIME_AUX.audit_break_id = 1, SUM(full_duration_sec), 0)) as aux_hold_time\n,IF(FULLTIME_AUX.audit_break_id = 2, SUM(full_duration_sec), 0) as aux_bano_sec\n,SEC_TO_TIME(IF(FULLTIME_AUX.audit_break_id = 2, SUM(full_duration_sec), 0)) as aux_bano_time\n,IF(FULLTIME_AUX.audit_break_id = 3, SUM(full_duration_sec), 0) as aux_descanso_sec\n,SEC_TO_TIME(IF(FULLTIME_AUX.audit_break_id = 3, SUM(full_duration_sec), 0)) as aux_descanso_time\n,IF(FULLTIME_AUX.audit_break_id = 4, SUM(full_duration_sec), 0) as aux_reunion_sec\n,SEC_TO_TIME(IF(FULLTIME_AUX.audit_break_id = 4, SUM(full_duration_sec), 0)) as aux_reunion_time\n,IF(FULLTIME_AUX.audit_break_id = 5, SUM(full_duration_sec), 0) as aux_curso_sec\n,SEC_TO_TIME(IF(FULLTIME_AUX.audit_break_id = 5, SUM(full_duration_sec), 0)) as aux_curso_time\n\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\n(".concat(auditDatetimeEndFullAuxiliarQuery(userSelection), ") as FULLTIME_AUX\n\nGROUP BY FULLTIME_AUX.audit_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n ");
+}
+
+function auditAssignationQuery(userSelection) {
+  return "\n  -- ---------------------------------------------------------------\n  -- FIELDS\n  SELECT\n  \n  -- TIME & INTERVAL\n  \n  FULLTIME_ASIG.audit_agent_id\n  ,FULLTIME_ASIG.start_date as aux_start_date\n  ,FULLTIME_ASIG.end_date as aux_end_date\n  ,IF(FULLTIME_ASIG.audit_break_id = 6, SUM(full_duration_sec), 0) as asig_llamadas_salientes_sec\n  ,SEC_TO_TIME(IF(FULLTIME_ASIG.audit_break_id = 6, SUM(full_duration_sec), 0)) as asig_llamadas_salientes_time\n  ,IF(FULLTIME_ASIG.audit_break_id = 7, SUM(full_duration_sec), 0) as asig_rrss_sec\n  ,SEC_TO_TIME(IF(FULLTIME_ASIG.audit_break_id = 7, SUM(full_duration_sec), 0)) as asig_rrss_time\n  ,IF(FULLTIME_ASIG.audit_break_id = 8, SUM(full_duration_sec), 0) as asig_calidad_sec\n  ,SEC_TO_TIME(IF(FULLTIME_ASIG.audit_break_id = 8, SUM(full_duration_sec), 0)) as asig_calidad_time\n  \n  \n  -- ---------------------------------------------------------------\n  -- TABLES & JOINS\n  \n  FROM\n  \n  (".concat(auditDatetimeEndFullAssignationQuery(userSelection), ") as FULLTIME_ASIG\n  \n  GROUP BY FULLTIME_ASIG.audit_agent_id\n  \n  -- ---------------------------------------------------------------\n  -- END\n   ");
+}
+
+function cdrQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- MAINCDR FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\n\ncdr_agent_id\n,COUNT(cdr_agent_id) AS COUNT_cdr_agent_id\n,cdr_queue_id as queue_id\n,inv_queue_name as queue_name\n,IF(cdr_call_made = 1 AND cdr_dcontext <> 'from-internal', COUNT(cdr_call_made), 0) as outbound_calls_made\n,IF(cdr_call_made = 1 AND cdr_dcontext <> 'from-internal', SUM(cdr_duration_sec), 0) as outbound_made_sec\n,IF(cdr_call_made = 1 AND cdr_dcontext <> 'from-internal', SEC_TO_TIME(SUM(cdr_duration_sec)), 0) as outbound_made_time\n,IF(cdr_call_made = 1 AND cdr_dcontext <> 'from-internal', SEC_TO_TIME(ROUND(AVG(cdr_duration_sec))), 0) as outbound_made_avg_time\n,IF(cdr_dcontext = 'from-internal', COUNT(cdr_id), 0) as outbound_call_internal\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\nMainCdr\nLEFT OUTER JOIN InvAgent\nON cdr_agent_id = inv_agent_id\n\nLEFT OUTER JOIN HcaAgent\nON cdr_agent_id = hca_agent_id\nAND cdr_date = hca_agent_date\n\nLEFT OUTER JOIN InvQueue\nON cdr_queue_id = inv_queue_id\n\nLEFT OUTER JOIN HcaQueue\nON cdr_agent_id = hca_queue_id\nAND cdr_date = hca_queue_date\n\nLEFT OUTER JOIN MainCallEntry\nON cdr_uniqueid = callentry_uniqueid\n\n\n-- ---------------------------------------------------------------\n-- CONDITIONS\nWHERE 1\n\n-- TIME AND DATE\n".concat((0, _sqlFunctions.dateAndTimeSqlQuery)(userSelection, "cdr_calldate"), "\n\n-- AGENT\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.agent, "hca_agent_id"), "\n\n-- SUPERVISOR\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.supervisor, "hca_agent_people_json"), "\n\n-- SCHEDULE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_schedule_json"), "\n\n-- ROLE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_role_json"), "\n\n-- CLIENT\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.client, "hca_queue_client_json"), "\n\n-- QUEUE\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.queue, "cdr_queue_id"), "\n\n-- SERVICE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.service, "hca_queue_service_json"), "\n\n-- CAMPAIGN\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.campaign, "callentry_campaign_id"), "\n\n-- BREAK\n\n\n-- ASIGNACION\n\n\n-- PLANNED CLIENT\n\n\n-- PLANNED QUEUE\n\n\n-- PLANNED SERVICE\n\n\n-- PLANNED CAMPAIGN\n\n\nGROUP BY cdr_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n");
+}
+
+function callentryQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\ncallentry_agent_id\n,count(callentry_agent_id) AS COUNT_callentry_agent_id\n,DATE(callentry_datetime_init) as start_date\n,DATE(callentry_datetime_end) as end_date\n,JSON_UNQUOTE(JSON_EXTRACT(inv_agent_people_json, \"$[0].name\")) as supervisor_name\n,IF(callentry_status = 'terminada', COUNT(callentry_id), 0) as inbound_calls_attended\n,IF(callentry_status = 'terminada', SUM(callentry_duration_sec), 0) as inbound_attended_duration_sec\n,IF(callentry_status = 'terminada', SEC_TO_TIME(SUM(callentry_duration_sec)), 0) as inbound_attended_duration_time\n,IF(callentry_status = 'terminada', SEC_TO_TIME(ROUND(AVG(callentry_duration_sec))), 0) as inbound_attended_avg_time\n\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\nMainCallEntry\nLEFT OUTER JOIN InvAgent\nON callentry_agent_id = inv_agent_id\n\nLEFT OUTER JOIN HcaAgent\nON callentry_agent_id = hca_agent_id\nAND callentry_date = hca_agent_date\n\nLEFT OUTER JOIN InvQueue\nON callentry_queue_id = inv_queue_id\n\nLEFT OUTER JOIN HcaQueue\nON callentry_queue_id = hca_queue_id\nAND callentry_date = hca_queue_date\n\n\n-- ---------------------------------------------------------------\n-- CONDITIONS\nWHERE 1\n\n-- TIME AND DATE\n".concat((0, _sqlFunctions.dateAndTimeSqlQuery)(userSelection, "callentry_datetime_init"), "\n\n-- AGENT\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.agent, "hca_agent_id"), "\n\n-- SUPERVISOR\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.supervisor, "hca_agent_people_json"), "\n\n-- SCHEDULE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_schedule_json"), "\n\n-- ROLE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_role_json"), "\n\n-- CLIENT\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.client, "hca_queue_client_json"), "\n\n-- QUEUE\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.queue, "callentry_queue_id"), "\n\n-- SERVICE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.service, "hca_queue_service_json"), "\n\n-- CAMPAIGN\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.campaign, "callentry_campaign_id"), "\n\n-- BREAK\n\n\n-- ASIGNACION\n\n\n-- PLANNED CLIENT\n\n\n-- PLANNED QUEUE\n\n\n-- PLANNED SERVICE\n\n\n-- PLANNED CAMPAIGN\n\nGROUP BY callentry_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n ");
+}
+
+function auditDatetimeEndFullAuxiliarQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\naudit_agent_id\n,DATE(audit_datetime_init) as start_date\n,DATE(audit_datetime_end) as end_date\n,audit_break_id\n,inv_break_name\n,IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec)) as full_duration_sec\n,SEC_TO_TIME(IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec))) as full_duration_time\n\n\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\nMainAudit\nLEFT OUTER JOIN InvAgent\nON audit_agent_id = inv_agent_id\n\nLEFT OUTER JOIN InvBreak\nON audit_break_id = inv_break_id\n\nLEFT OUTER JOIN HcaAgent\nON audit_agent_id = hca_agent_id\nAND audit_date = hca_agent_date\n\nWHERE 1\nAND\naudit_break_id is not null\nAND\ninv_break_productivity = 0\n\n-- TIME AND DATE\n".concat((0, _sqlFunctions.dateAndTimeSqlQuery)(userSelection, "audit_datetime_init"), "\n\n-- AGENT\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.agent, "hca_agent_id"), "\n\n-- SUPERVISOR\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.supervisor, "hca_agent_people_json"), "\n\n-- SCHEDULE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_schedule_json"), "\n\n-- ROLE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_role_json"), "\n\n-- CLIENT\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.client, "audit_operation_json", "client"), "\n\n-- QUEUE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.queue, "audit_operation_json", "queue"), "\n\n-- SERVICE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.service, "audit_operation_json", "service"), "\n\n-- CAMPAIGN\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.campaign, "audit_operation_json", "campaign"), "\n\n-- BREAK\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.auxiliar, "audit_break_id"), "\n\n-- ASIGNACION\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.assignation, "audit_break_id"), "\n\n-- PLANNED CLIENT\n\n\n-- PLANNED QUEUE\n\n\n-- PLANNED SERVICE\n\n\n-- PLANNED CAMPAIGN\n\nGROUP BY audit_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n ");
+}
+
+function auditDatetimeEndFullAssignationQuery(userSelection) {
+  return "\n-- ---------------------------------------------------------------\n-- FIELDS\nSELECT\n\n-- TIME & INTERVAL\n\naudit_agent_id\n,DATE(audit_datetime_init) as start_date\n,DATE(audit_datetime_end) as end_date\n,audit_break_id\n,inv_break_name\n,IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec)) as full_duration_sec\n,SEC_TO_TIME(IF(audit_datetime_end is null, TIMESTAMPDIFF(second,audit_datetime_init,now()), SUM(audit_duration_sec))) as full_duration_time\n\n\n\n-- ---------------------------------------------------------------\n-- TABLES & JOINS\n\nFROM\n\nMainAudit\nLEFT OUTER JOIN InvAgent\nON audit_agent_id = inv_agent_id\n\nLEFT OUTER JOIN InvBreak\nON audit_break_id = inv_break_id\n\nLEFT OUTER JOIN HcaAgent\nON audit_agent_id = hca_agent_id\nAND audit_date = hca_agent_date\n\nWHERE 1\nAND\naudit_break_id is not null\nAND\ninv_break_productivity = 1\n\n-- TIME AND DATE\n".concat((0, _sqlFunctions.dateAndTimeSqlQuery)(userSelection, "audit_datetime_init"), "\n\n-- AGENT\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.agent, "hca_agent_id"), "\n\n-- SUPERVISOR\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.supervisor, "hca_agent_people_json"), "\n\n-- SCHEDULE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_schedule_json"), "\n\n-- ROLE\n").concat((0, _sqlFunctions.objectToJsonSqlQuery)(userSelection.client, "hca_agent_role_json"), "\n\n-- CLIENT\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.client, "audit_operation_json", "client"), "\n\n-- QUEUE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.queue, "audit_operation_json", "queue"), "\n\n-- SERVICE\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.service, "audit_operation_json", "service"), "\n\n-- CAMPAIGN\n").concat((0, _sqlFunctions.arrayToJsonSqlQuery)(userSelection.campaign, "audit_operation_json", "campaign"), "\n\n-- BREAK\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.auxiliar, "audit_break_id"), "\n\n-- ASIGNACION\n").concat((0, _sqlFunctions.arrayToSqlQuery)(userSelection.assignation, "audit_break_id"), "\n\n-- PLANNED CLIENT\n\n\n-- PLANNED QUEUE\n\n\n-- PLANNED SERVICE\n\n\n-- PLANNED CAMPAIGN\n\nGROUP BY audit_agent_id\n\n-- ---------------------------------------------------------------\n-- END\n ");
+}

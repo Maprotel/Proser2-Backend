@@ -44,6 +44,7 @@ export async function operationResumeReport(userSelection) {
   , outbound_internal_sec/login_duration_sec as internal_percent
   , (inbound_attended_duration_sec + outbound_made_sec)/
   (inbound_calls_attended + outbound_calls_made) as tmo
+  , (inbound_attended_duration_sec + outbound_made_sec) as sec_conversation
   , SEC_TO_TIME(inbound_attended_duration_sec + outbound_made_sec) as time_conversation
   , hung_agent as hung_by_agent
   , auxiliar_duration_sec
