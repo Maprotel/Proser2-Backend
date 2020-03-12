@@ -2,9 +2,9 @@ import { loadOneDay } from "../execute/execute-date";
 
 import moment from "moment";
 
-let today = moment().format( 'YYYY-MM-DD' )
+let today = moment().format( 'YYYY-MM-DD' );
 
-loadOneDay( today )
+loadOneDay( today );
 
 
 /************************************************************************ */

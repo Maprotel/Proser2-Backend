@@ -4,6 +4,9 @@ pm2 startup
 
 pm2 start --name SERVER ./src/server/server.js --interpreter ./node_modules/.bin/babel-node
 pm2 start --name UPDATE ./src/sync/etl/load/load_day.js --interpreter ./node_modules/.bin/babel-node
+pm2 start --name CLEAR ./src/sync/etl/load/load_erase_real.js --interpreter ./node_modules/.bin/babel-node
+
+
 pm2 start --name CURRENT ./src/sync/etl/current/current.js --interpreter ./node_modules/.bin/babel-node
 pm2 start --name HISTORY ./src/sync/etl/load/load_history.js --interpreter ./node_modules/.bin/babel-node
 

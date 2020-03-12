@@ -21,7 +21,7 @@ import { updateHcaQueue } from "../update/hca/update_hca_queue";
 // import { transformHcaAgent } from "../transform/hca/hca-agent/transform_hca_agent";
 
 
-let input_date = process.argv[ 2 ]
+let input_date = process.argv[ 2 ];
 let incoming_date = input_date === '' ? '' : process.argv[ 2 ];
 
 const chalk = require( "chalk" );

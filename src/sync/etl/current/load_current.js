@@ -8,6 +8,7 @@ const {
   clearIntervalAsync
 } = require("set-interval-async/dynamic");
 
+
 // EXTRACT MAIN
 import { extractMainQueueLog } from "../extract/main/extract_queuelog";
 import { extractMainAudit } from "../extract/main/extract_audit";
@@ -171,6 +172,7 @@ export async function transformAll() {
 
 async function executeExtract() {
   let num = 0;
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
     num += 1;
@@ -185,6 +187,7 @@ async function executeExtract() {
 
 async function executeTransform() {
   let num = 0;
+  // eslint-disable-next-line no-constant-condition
   while (true) {
     await new Promise(resolve => setTimeout(resolve, 10 * 1000));
     num += 1;
@@ -197,9 +200,11 @@ async function executeTransform() {
   }
 }
 
+
 async function executeAll() {
   executeExtract();
   executeTransform();
+  runEraseReal () ;
 }
 
 executeAll();

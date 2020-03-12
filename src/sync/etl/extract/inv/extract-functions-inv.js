@@ -53,6 +53,8 @@ async function readOriginAllRecords(table) {
   return result;
 }
 
+
+
 module.exports = {
   writeDestiny,
   readOriginAllRecords

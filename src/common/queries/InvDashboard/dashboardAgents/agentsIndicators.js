@@ -5,9 +5,9 @@ async function agentsIndicators(userSelection) {
   let result = {};
   let resume_error = false;
 
-  if(userSelection.mode.name='Actual'){
+  if(userSelection.mode.name ==='Actual'){
     userSelection.start_date = userSelection.current_date;
-    userSelection.end_date = userSelection.end_date;
+    userSelection.end_date = userSelection.start_date;
   }
 
   async function agentsPlannedTotalFunction(userSelection) {
