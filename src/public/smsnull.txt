@@ -1,1 +1,5 @@
+<<<<<<< HEAD
 Fecha:2020-05-21,Hora:09:04:01,Cola:null,Recibidas:40,Atendidas:37,NS:57.50%,Meta:null
+=======
+Fecha:2020-05-19,Hora:14:38:42,Cola:null,Recibidas:200,Atendidas:190,NS:78.50%,Meta:null
+>>>>>>> 468dbb4f22aa98e8f37111d7416b6f9f15772835
