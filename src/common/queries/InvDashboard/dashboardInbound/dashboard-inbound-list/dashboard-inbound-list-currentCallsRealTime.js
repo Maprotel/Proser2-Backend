@@ -130,7 +130,7 @@ export async function dashboardInboundListCurrentCallsRealTime(
    -- END ---------------------------------------------------------------
 
   `;
-console.log(query);
+
   try {
     result = await pool.destinyReports.query(query);
     return result;

@@ -288,6 +288,52 @@ async function readOriginBySelection(start_date, table, datefield, selection) {
   return result;
 }
 
+// delete and write processed records
+async function deleteWriteDestiny(data, current_table) {
+  let result = null;
+  if (data[0] !== undefined) {
+    return new Promise((resolve, reject) => {
+      let myfields = Object.keys(data[0]);
+
+      let myRecords = data.map(x => {
+        return Object.values(x);
+      });
+
+      let updateFieldsArray = myfields.map((x, index) => {
+        return `${x} = VALUE(${x})`;
+      });
+
+      let updateFields = updateFieldsArray;
+
+      let querySQL = `
+      DELETE FROM ${current_table};
+      INSERT INTO ${current_table} (${myfields}) values ?
+      ON DUPLICATE KEY UPDATE ${updateFields}
+    `;
+      // Record in database
+      resolve(pool.destinyReports.query(querySQL, [myRecords]));
+      reject(`Error`);
+    });
+  } else {
+    return [];
+  }
+}
+
+// delete table info
+async function deleteDestiny(current_table) {
+  let result = null;
+
+  return new Promise((resolve, reject) => {
+    let querySQL = `
+      DELETE FROM ${current_table}
+    `;
+
+    // Record in database
+    resolve(pool.destinyReports.query(querySQL));
+    reject(`Error`);
+  });
+}
+
 // Calculate previous date
 function previousDate(initial_date) {
   let formated_date = moment().format("YYYY-MM-DD");
@@ -372,5 +418,7 @@ module.exports = {
   previousDate,
   nextDate,
   minDate,
-  startDate
+  startDate,
+  deleteWriteDestiny,
+  deleteDestiny
 };
