@@ -45,7 +45,7 @@
     "local": "npx babel-node src/sync/etl/local/extract_local.js",
     "port": "lsof -i :3151",
     "fortinet": "ps aux | grep openforti",
-    "execute-inv": "npx babel-node src/sync/etl/execute/execute_inv.js",
+    "execute-inv": "npx babel-node src/sync/etl/execute/execute-inv.js",
     "execute-main": "npx babel-node src/sync/etl/execute/execute_main.js",
     "execute-real": "npx babel-node src/sync/etl/execute/execute_real.js",
     "execute-day": "npx babel-node src/sync/etl/execute/execute_day.js"

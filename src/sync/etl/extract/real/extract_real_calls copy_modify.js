@@ -48,7 +48,7 @@ async function extractRealCalls(start_date) {
   // );
 
   result = removeRowDataPacket(preresult);
-
+  
   try {
     let written;
     let msg = "";
@@ -81,19 +81,19 @@ async function extractRealCalls(start_date) {
 }
 
 // Read actual records
-// async function deleteOtherDates(start_date, destinyTable, destinyDateField) {
-//   let today = moment().format("YYYY-MM-DD");
+async function deleteOtherDates(start_date, destinyTable, destinyDateField) {
+  let today = moment().format("YYYY-MM-DD");
 
-//   return new Promise((resolve, reject) => {
-//     let querySQL = `
-//     DELETE FROM RealCurrentCalls WHERE rcc_date <> '${start_date}';
-//     DELETE FROM RealCurrentCalls WHERE rcc_callentry_datetime_end is not null;
+  return new Promise((resolve, reject) => {
+    let querySQL = `
+    DELETE FROM RealCurrentCalls WHERE rcc_date <> '${start_date}';
+    DELETE FROM RealCurrentCalls WHERE rcc_callentry_datetime_end is not null;
 
-//     `;
-//     resolve(pool.destinyReports.query(querySQL));
-//     reject(`Error`);
-//   });
-// }
+    `;
+    resolve(pool.destinyReports.query(querySQL));
+    reject(`Error`);
+  });
+}
 
 // Read actual records
 async function readOrigin(start_date, table, datefield) {
@@ -101,28 +101,27 @@ async function readOrigin(start_date, table, datefield) {
   return new Promise((resolve, reject) => {
     let querySQL = `
    SELECT
-    id as rcc_callentry_id
-    ,id_agent as rcc_callentry_agent_id
-    ,id_queue_call_entry as rcc_callentry_queue_id
-    ,id_contact as rcc_callentry_contact_id
-    ,callerid as rcc_callentry_callerid
-    ,DATE_FORMAT(datetime_init,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_init
-    ,DATE_FORMAT(datetime_end,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_end
-    ,duration as rcc_callentry_duration_sec
-    ,status as rcc_callentry_status
-    ,transfer as rcc_callentry_transfer
-    ,DATE_FORMAT(datetime_entry_queue,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_entry_queue
-    ,duration_wait as rcc_callentry_duration_wait_sec
-    ,uniqueid as rcc_callentry_uniqueid
-    ,id_campaign as rcc_callentry_campaign_id
-    ,trunk as rcc_callentry_trunk
-    ,DATE_FORMAT(datetime_entry_queue,'%Y-%m-%d %H:%i:%s') as rcc_date
+    current_call_entry.id_call_entry as rcc_callentry_id
+    ,current_call_entry.id_agent as rcc_callentry_agent_id
+    ,current_call_entry.id_queue_call_entry as rcc_callentry_queue_id
+    ,call_entry.id_contact as rcc_callentry_contact_id
+    ,current_call_entry.callerid as rcc_callentry_callerid
+    ,DATE_FORMAT(current_call_entry.datetime_init,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_init
+    ,DATE_FORMAT(call_entry.datetime_end,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_end
+    ,call_entry.duration as rcc_callentry_duration_sec
+    ,call_entry.status as rcc_callentry_status
+    ,call_entry.transfer as rcc_callentry_transfer
+    ,DATE_FORMAT(call_entry.datetime_entry_queue,'%Y-%m-%d %H:%i:%s') as rcc_callentry_datetime_entry_queue
+    ,call_entry.duration_wait as rcc_callentry_duration_wait_sec
+    ,current_call_entry.uniqueid as rcc_callentry_uniqueid
+    ,call_entry.id_campaign as rcc_callentry_campaign_id
+    ,call_entry.trunk as rcc_callentry_trunk
+    ,DATE_FORMAT(current_call_entry.datetime_init,'%Y-%m-%d %H:%i:%s') as rcc_date
 
-    FROM call_center.call_entry
 
-    WHERE DATE(datetime_entry_queue) = '${start_date}'
-    AND (status = 'en-cola' OR status = 'activa')
-
+    FROM call_center.current_call_entry as current_call_entry
+    LEFT OUTER JOIN call_center.call_entry as call_entry
+    ON id_call_entry = call_entry.id
 
     `;
     resolve(pool.origin.query(querySQL));

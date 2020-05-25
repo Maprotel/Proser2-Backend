@@ -3,7 +3,7 @@ FOO=bar
 NODE_ENV='development'
 
 # CALLCENTER SUBTITLES
-CALLCENTER_NAME=HMO- Aps
+CALLCENTER_NAME=HMO- Emergencia
 CALLCENTER_SLOGAN=Servicio médicos de excelencia
 CALLCENTER_LOGO=/assets/img/logos_client/hmo-logo.png
 CALLCENTER_SITE=http://www.hmoservisalud.com/HMO-Servisalud/
@@ -13,23 +13,23 @@ CALLCENTER_SITE=http://www.hmoservisalud.com/HMO-Servisalud/
 DEFAULT_PORT=3161
 # ------------------------------------------------------------------------
 
-# MAIN DATABASE CONNECTION destinyReports
+# MAIN DATABASE CONECTION destinyReports
 CONNECTION_LIMIT=10
 REPORTS_DB_HOST=localhost
 REPORTS_DB_PORT=3306
-REPORTS_DB_USER=maprotel
+REPORTS_DB_USER=root
 REPORTS_DB_PASSWORD=M4pr0t3l
 # MAIN DATABASE NAMEs
 PROSER_REPORTS_DATABASE=proser-rep-proser_base
 # ------------------------------------------------------------------------
-# INVENTORY DATABASE CONNECTION
+# INVENTORY DATABASE CONECTION
 CONNECTION_LIMIT=10
 INVENTORY_DB_HOST=localhost
 # ***** originInventory
 INVENTORY_DB_USER_READ=readmaprotel
 INVENTORY_DB_PASSWORD_READ=M4pr0t3l
 # ***** destinyInventory
-INVENTORY_DB_USER_WRITE=maprotel
+INVENTORY_DB_USER_WRITE=root
 INVENTORY_DB_PASSWORD_WRITE=M4pr0t3l
 # INVENTORY DATABASE NAMES
 PROSER_INVENTORY_DATABASE=proser-inv-proser_base
@@ -37,24 +37,27 @@ PROSER_INVENTORY_DATABASE=proser-inv-proser_base
 # ORIGIN DATABASE CONECTION origin
 CONNECTION_LIMIT=10
 ORIGIN_DB_HOST=172.20.0.235
-ORIGIN_DB_USER=maprotel
+ORIGIN_DB_USER=readmaprotel
 ORIGIN_DB_PASSWORD=M4pr0t3l
 # DATABASES NAMES
 ORIGIN_ASTERISK_DB=asterisk
 ORIGIN_ASTERISKCDR_DB=asteriskcdrdb
 ORIGIN_CALLCENTER_DB=call_center
+
+#ORIGIN_DB_HOST=10.30.4.50
+#ORIGIN_DB_USER=test_maprotel
 # ------------------------------------------------------------------------
 
 # RECORDING PATH
 ## MAIN PATH
 ORIGIN_RECORDING_PATH=/var/spool/asterisk/monitor
 ORIGIN_QUEUE_JSON=http://10.30.4.55/proser/bk_TS/src/public/realtime/realtime.json
-DESTINY_FILE_PATH=/var/www/html/proser_reports/src/public/audio/
+DESTINY_FILE_PATH=/home/leonardo/2019/code/maprotel/Proser2-Backend/src/public/audio/
 
 # SMS PATH
 DESTINY_FILE_PATH_SMS_LOCAL=/var/www/html/local/
 DESTINY_FILE_PATH_SMS_EXTERNAL=/var/www/html/external/
-DESTINY_FILE_PATH_SMS_MOUNT='//10.10.4.101/c$/share/ -o username=digitelsms,password=InversionesDRC.2017 /mnt/'
+## DESTINY_FILE_PATH_SMS_MOUNT='//10.10.4.101/c$/share/ -o username=digitelsms,password=InversionesDRC.2017 /mnt/'
 #DESTINY_FILE_PATH_SMS_MOUNT='mount -t cifs //10.10.4.101/c$/share/ -o username=digitelsms,password=InversionesDRC.2017 /mnt/'
 
 ## HAVE TO ADD TO TH PATH /YYYY/MM/DD/recordigfile
@@ -75,7 +78,7 @@ CDR_MARKER_CHAR_ID=9
 
 # CALL TIME
 CDR_SHORTCALL_TIME=10
-CDR_SERVICE_IDEAL_TIME=19.9
+CDR_SERVICE_IDEAL_TIME=6
 CDR_GOSTCALL_TIME=10
 # ------------------------------------------------------------------------
 
@@ -101,4 +104,8 @@ COLORSCALE_NAME=Normal
 AUTOREGISTER=false
 # ------------------------------------------------------------------------
 
-DESTINY_FILE_PATH_SMS=/media/jorge/Development/proser_reports/proser-backend/src/public/sms
+
+# SMS PATH
+DESTINY_FILE_PATH_SMS_LOCAL=/home/leonardo/01.Maprotel/2020/code/Proser2-Backend/src/public/sms
+DESTINY_FILE_PATH_SMS_EXTERNAL=/home/leonardo/01.Maprotel/2020/code/Proser2-Backend/src/public/sms
+DESTINY_FILE_PATH_SMS_MOUNT=''

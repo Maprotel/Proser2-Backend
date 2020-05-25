@@ -115,7 +115,7 @@ async function executeAllInv () {
 /************************************************************************ */
 
 // npx babel-node src/sync/etl/execute/execute_inv.js
-executeAllInv();
+// executeAllInv();
 
 module.exports = {
   executeAllInv
