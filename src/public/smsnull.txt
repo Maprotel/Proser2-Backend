@@ -1,1 +1,1 @@
-Fecha:2020-05-19,Hora:14:38:42,Cola:null,Recibidas:200,Atendidas:190,NS:78.50%,Meta:null
+Fecha:2020-05-21,Hora:09:45:44,Cola:null,Recibidas:36,Atendidas:33,NS:63.89%,Meta:null
