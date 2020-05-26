@@ -213,5 +213,9 @@
   "AgentException": {
     "dataSource": "proserInventory",
     "public": true
+  },
+  "PlanCalendar"{
+    "dataSource": "proserPlan",
+    "public": true
   }
 }
