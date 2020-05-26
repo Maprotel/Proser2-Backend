@@ -1,0 +1,28 @@
+{
+    "name": "PlanRole",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_role_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_role_name": {
+        "type": "string"
+      },
+      "plan_role_type": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }

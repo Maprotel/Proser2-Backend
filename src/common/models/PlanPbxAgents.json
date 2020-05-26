@@ -1,0 +1,28 @@
+{
+    "name": "PlanPbxAgents",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_pbxagent_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_pbxagent_name": {
+        "type": "string"
+      },
+      "plan_pbxagent_people_id": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }
