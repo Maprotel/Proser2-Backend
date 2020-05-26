@@ -215,6 +215,7 @@
     "public": true
   },
   "PlanCalendar": {
+<<<<<<< Updated upstream
     "dataSource": "proserPlan",
     "public": true
   },
@@ -251,6 +252,8 @@
     "public": true
   },
   "PlanTeam": {
+=======
+>>>>>>> Stashed changes
     "dataSource": "proserPlan",
     "public": true
   }
