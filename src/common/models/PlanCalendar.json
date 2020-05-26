@@ -1,0 +1,34 @@
+{
+  "name": "PlanCalendar",
+  "base": "PersistedModel",
+  "idInjection": true,
+  "properties": {
+    "plan_calendar_id": {
+      "type": "string",
+      "id": true
+    },
+    "plan_calendar_name": {
+      "type": "string"
+    },
+    "plan_calendar_type": {
+      "type": "string"
+    },
+    "plan_calendar_status": {
+      "type": "string"
+    },
+    "plan_calendar_chk": {
+      "type": "string"
+    }
+  },
+  "validations": [],
+  "relations": {},
+  "acls": [
+    {
+      "accessType": "*",
+      "principalType": "ROLE",
+      "principalId": "Administrator",
+      "permission": "ALLOW"
+    }
+  ],
+  "methods": {}
+}
