@@ -115,6 +115,7 @@ module.exports = function ( InvDisplay ) {
       http: { source: "body" }
     },
     returns: { type: "array", root: "true" },
+    http: { verb: "get"},
     description: [ "List of abandoned calls" ]
   } );
 

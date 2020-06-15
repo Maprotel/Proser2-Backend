@@ -12,31 +12,9 @@ export async function displayShow(type) {
   let result;
   let resume_error = false;
 
-  if(userSelection.mode.name='Actual'){
-    userSelection.start_date = userSelection.current_date;
-    userSelection.end_date = userSelection.end_date;
-  }
-
-  let currentDate = moment().format("HH:mm:ss");
-
-  if (type === null) {
-    type = "inbound";
-  }
-
   let query = `
-  SET STATEMENT max_statement_time=5 FORnpm run history
   
-  SELECT * FROM ProShowDisplay WHERE 
-  
-  pro_show_display_start_time <= '${currentDate}'
-  AND
-  pro_show_display_end_time >=  '${currentDate}'
-  AND
-  JSON_UNQUOTE(JSON_EXTRACT(pro_show_display_type, "$.value")) = 'inbound'
-
-  order by pro_show_display_start_time desc
-  
-  limit 1
+  SELECT * FROM ProShowDisplay 
           `;
 
   console.log("query", query);
