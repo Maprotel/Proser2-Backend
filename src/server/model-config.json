@@ -215,45 +215,6 @@
     "public": true
   },
   "PlanCalendar": {
-<<<<<<< Updated upstream
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanCalendarFixedHollyday": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanCalendarVariableHollyday": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanPbxAgents": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanPeople": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanPeopleAssignation": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanRole": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanShift": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanShiftDay": {
-    "dataSource": "proserPlan",
-    "public": true
-  },
-  "PlanTeam": {
-=======
->>>>>>> Stashed changes
     "dataSource": "proserPlan",
     "public": true
   }
