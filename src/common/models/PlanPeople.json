@@ -1,0 +1,28 @@
+{
+    "name": "PlanPeople",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_people_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_people_name": {
+        "type": "string"
+      },
+      "plan_people_profile": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }

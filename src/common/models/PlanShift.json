@@ -1,0 +1,52 @@
+{
+    "name": "PlanShift",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_shift_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_shift_name": {
+        "type": "string"
+      },
+      "plan_shift_type": {
+        "type": "string"
+      },
+      "plan_shift_start": {
+        "type": "string"
+      },
+      "plan_shift_end": {
+        "type": "string"
+      },
+      "plan_shift_breaktimeminutes": {
+        "type": "number"
+      },
+      "plan_shift_hollydays": {
+        "type": "string"
+      },
+      "plan_shift_hollyday_name": {
+        "type": "string"
+      },
+      "plan_shift_lastgeneratedyear": {
+        "type": "number"
+      },
+      "plan_shift_status": {
+        "type": "string"
+      },
+      "plan_calendar_chk": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }

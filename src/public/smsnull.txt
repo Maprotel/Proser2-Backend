@@ -1,0 +1,1 @@
+Fecha:2020-05-25,Hora:16:50:05,Cola:null,Recibidas:242,Atendidas:227,NS:66.12%,Meta:null

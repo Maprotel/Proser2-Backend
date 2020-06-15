@@ -1,0 +1,54 @@
+{
+    "name": "PlanPeopleAssignation",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_assignation_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_assignation_json": {
+        "type": "string"
+      },
+
+      "plan_assignation_datetime_start": {
+        "type": "string"
+      },
+      "plan_assignation_datetime_end": {
+        "type": "string"
+      },
+      "plan_assignation_permanent_type": {
+        "type": "string"
+      },
+      
+      "plan_assignation_people_id": {
+        "type": "number"
+      },
+      "plan_assignation_supervisor_id": {
+        "type": "number"
+      },
+      "plan_assignation_shift_id": {
+        "type": "number"
+      },
+      "plan_assignation_team_id": {
+        "type": "number"
+      },
+      "plan_assignation_role_id": {
+        "type": "number"
+      },
+      "plan_assignation_supervisor_list": {
+        "type": "number"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }

@@ -1,0 +1,82 @@
+{
+    "name": "PlanShiftDay",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_shiftday_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_shiftday_calendarid": {
+        "type": "string"
+      },
+      "plan_shiftday_date": {
+        "type": "string"
+      },
+      "plan_shiftday_ref": {
+        "type": "string"
+      },
+      "plan_shiftday_weekday": {
+        "type": "number"
+      },
+      "plan_shiftday_month": {
+        "type": "number"
+      },
+      "plan_shiftday_week": {
+        "type": "number"
+      },
+      "plan_shiftday_monthday": {
+        "type": "number"
+      },
+      "plan_shiftday_monthday_id": {
+        "type": "string"
+      },
+      "plan_shiftday_year": {
+        "type": "string"
+      },
+      "plan_shiftday_yearmonth": {
+        "type": "string"
+      },
+      "plan_shiftday_start": {
+        "type": "string"
+      },
+      "plan_shiftday_end": {
+        "type": "string"
+      },
+      "plan_shiftday_starttime": {
+        "type": "string"
+      },
+      "plan_shiftday_endtime": {
+        "type": "string"
+      },
+      "plan_shiftday_breaktimeminutes": {
+        "type": "number"
+      },
+      "plan_shiftday_workingminutes": {
+        "type": "number"
+      },
+      "plan_shiftday_hollyday_name": {
+        "type": "string"
+      },
+      "plan_shiftday_workingday": {
+        "type": "string"
+      },
+      "plan_shiftday_type": {
+        "type": "string"
+      },
+      "plan_shiftday_date_json": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }

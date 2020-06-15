@@ -1,0 +1,28 @@
+{
+    "name": "PlanCalendarFixedHollyday",
+    "base": "PersistedModel",
+    "idInjection": true,
+    "properties": {
+      "plan_calendarfixedhollyday_id": {
+        "type": "string",
+        "id": true
+      },
+      "plan_calendarfixedhollyday_name": {
+        "type": "string"
+      },
+      "plan_calendarfixedhollyday_calendar_id": {
+        "type": "string"
+      }
+    },
+    "validations": [],
+    "relations": {},
+    "acls": [
+      {
+        "accessType": "*",
+        "principalType": "ROLE",
+        "principalId": "Administrator",
+        "permission": "ALLOW"
+      }
+    ],
+    "methods": {}
+  }
