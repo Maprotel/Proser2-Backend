@@ -32,7 +32,8 @@ import moment from "moment";
 
 /******************************************************************** */
 // MAIN FUNCTION
-export async function displayInboundIndicators ( userSelection ) {
+export async function displayInboundIndicators(userSelection) {
+  console.log(userSelection);
   let result = {};
   let resume_error = false;
 
@@ -271,7 +272,7 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
    
    
    -- TIME AND DATE
-   ${dateAndTimeSqlQueryRealTime(
+   ${dateAndTimeSqlQuery(
     userSelection,
     "callentry_datetime_entry_queue"
   ) }
@@ -320,7 +321,7 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
   
    -- END ---------------------------------------------------------------
   `;
-
+  console.log(query, "QUERY");
   try {
     result = await pool.destinyReports.query( query );
     return result;
