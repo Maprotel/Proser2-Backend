@@ -3,7 +3,6 @@
     "name": "db",
     "connector": "memory"
   },
-
   "proserReports": {
     "host": "${REPORTS_DB_HOST}",
     "port": 3306,
@@ -16,7 +15,6 @@
     "connectTimeout": 30000,
     "acquireTimeout": 20000
   },
-
   "proserInventory": {
     "host": "${INVENTORY_DB_HOST}",
     "port": 3306,
@@ -29,20 +27,18 @@
     "connectTimeout": 30000,
     "acquireTimeout": 20000
   },
-
   "proserPlan": {
     "host": "${INVENTORY_DB_HOST}",
     "port": 3306,
     "url": "",
     "database": "${PROSER_PLAN_DATABASE}",
     "password": "${INVENTORY_DB_PASSWORD_WRITE}",
-    "name": "proserInventory",
+    "name": "proserPlan",
     "user": "${INVENTORY_DB_USER_WRITE}",
     "connector": "mysql",
     "connectTimeout": 30000,
     "acquireTimeout": 20000
   },
-
   "emailDs": {
     "name": "emailDs",
     "connector": "mail",

@@ -17,7 +17,7 @@ export async function displayShow(type) {
   SELECT * FROM ProShowDisplay 
           `;
 
-  console.log("query", query);
+  // console.log("query", query);
 
   try {
     result = await pool.destinyReports.query(query);
