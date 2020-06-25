@@ -55,8 +55,8 @@ export async function displayInboundIndicators ( userSelection ) {
   let agentsAssignationResume = await agentsAssignationResumeFunction(
     userSelection
   );
-  let agentsHistoricBreakResume = [] //await agentsHistoricBreakResumeFunction(userSelection);
-  let agentsHistoricAssignationResume = [] // await agentsHistoricAssignationResumeFunction(userSelection);
+  let agentsHistoricBreakResume = []; //await agentsHistoricBreakResumeFunction(userSelection);
+  let agentsHistoricAssignationResume = []; // await agentsHistoricAssignationResumeFunction(userSelection);
 
   let scale = await scaleFunction( userSelection );
 
@@ -219,22 +219,22 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end) AS inboundAttended
   
   ,SUM(case when callentry_duration_sec <= ${
-    process.env.CDR_SHORTCALL_TIME
-    } then 1 else 0 end) AS inboundShort
+  process.env.CDR_SHORTCALL_TIME
+} then 1 else 0 end) AS inboundShort
   
   ,SUM(case when (callentry_duration_sec_wait <= ${
-    process.env.CDR_SERVICE_IDEAL_TIME
-    } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundBeforeTime
+  process.env.CDR_SERVICE_IDEAL_TIME
+} AND callentry_status = 'terminada')then 1 else 0 end) AS inboundBeforeTime
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end) - SUM(case when (callentry_duration_sec_wait <= ${
-    process.env.CDR_SERVICE_IDEAL_TIME
-    } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundAfterTime
+  process.env.CDR_SERVICE_IDEAL_TIME
+} AND callentry_status = 'terminada')then 1 else 0 end) AS inboundAfterTime
   
   ,SUM(callentry_hung_agent) AS inboundHungAgent
   
   ,SUM(case when (callentry_status = 'terminada' AND callentry_duration_sec_wait <= ${
-    process.env.CDR_SERVICE_IDEAL_TIME
-    } ) then 1 else 0 end) / SUM( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS inboundServiceLevel
+  process.env.CDR_SERVICE_IDEAL_TIME
+} ) then 1 else 0 end) / SUM( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS inboundServiceLevel
 
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end)/
@@ -279,46 +279,46 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
    
    -- TIME AND DATE
    ${dateAndTimeSqlQueryRealTime(
-      userSelection,
-      "callentry_datetime_entry_queue"
-    ) }
+    userSelection,
+    "callentry_datetime_entry_queue"
+  ) }
       
    -- AGENT
    ${arrayToSqlQuery( userSelection.agent, "callentry_agent_id" ) }
    
    -- SUPERVISOR
   ${objectToJsonSqlQuery(
-      userSelection.supervisor,
-      "callentry_people_json",
-      "supervisor"
-    ) }
+    userSelection.supervisor,
+    "callentry_people_json",
+    "supervisor"
+  ) }
 
   -- SCHEDULE
   ${objectToJsonSqlQuery(
-      userSelection.client,
-      "callentry_time_json",
-      "schedule"
-    ) }
+    userSelection.client,
+    "callentry_time_json",
+    "schedule"
+  ) }
 
   -- ROLE
   ${objectToJsonSqlQuery( userSelection.client, "callentry_people_json", "role" ) }
 
   -- CLIENT
   ${arrayToJsonSqlQuery(
-      userSelection.client,
-      "callentry_operation_json",
-      "client"
-    ) }
+    userSelection.client,
+    "callentry_operation_json",
+    "client"
+  ) }
 
   -- QUEUE
   ${arrayToSqlQuery( userSelection.queue, "callentry_queue_id" ) }
 
   -- SERVICE
   ${arrayToJsonSqlQuery(
-      userSelection.service,
-      "callentry_operation_json",
-      "service"
-    ) }
+    userSelection.service,
+    "callentry_operation_json",
+    "service"
+  ) }
    
    -- CAMPAIGN
    ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
