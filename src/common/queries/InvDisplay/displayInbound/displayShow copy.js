@@ -12,9 +12,9 @@ export async function displayShow(type) {
   let result;
   let resume_error = false;
 
-  if(userSelection.mode.name='Actual'){
+  if (userSelection.mode.name == "Actual") {
     userSelection.start_date = userSelection.current_date;
-    userSelection.end_date = userSelection.end_date;
+    // userSelection.end_date = userSelection.end_date;
   }
 
   let currentDate = moment().format("HH:mm:ss");

@@ -32,7 +32,7 @@ import moment from "moment";
 
 /******************************************************************** */
 // MAIN FUNCTION
-export async function displayInboundIndicators ( userSelection ) {
+export async function displayInboundIndicators(userSelection) {
   let result = {};
   let resume_error = false;
 
@@ -42,45 +42,45 @@ export async function displayInboundIndicators ( userSelection ) {
   let displayInboundCurrentCallsIndicators = await displayInboundCurrentCallsIndicatorsFunction(
     userSelection
   );
-  let agentsPlannedTotal = await agentsPlannedTotalFunction( userSelection );
-  let agentsConnectedTotal = await agentsConnectedTotalFunction( userSelection );
-  let agentsLoggedTotal = await agentsLoggedTotalFunction( userSelection );
+  let agentsPlannedTotal = await agentsPlannedTotalFunction(userSelection);
+  let agentsConnectedTotal = await agentsConnectedTotalFunction(userSelection);
+  let agentsLoggedTotal = await agentsLoggedTotalFunction(userSelection);
   let agentsConnectedByGroup = await agentsConnectedByGroupFunction(
     userSelection
   );
 
-  let agentHistoricResume = []//await agentHistoricResumeFunction(userSelection);
+  let agentHistoricResume = []; //await agentHistoricResumeFunction(userSelection);
 
-  let agentsAuxiliarResume = await agentsAuxiliarResumeFunction( userSelection );
+  let agentsAuxiliarResume = await agentsAuxiliarResumeFunction(userSelection);
   let agentsAssignationResume = await agentsAssignationResumeFunction(
     userSelection
   );
-  let agentsHistoricBreakResume = [] //await agentsHistoricBreakResumeFunction(userSelection);
-  let agentsHistoricAssignationResume = [] // await agentsHistoricAssignationResumeFunction(userSelection);
+  let agentsHistoricBreakResume = []; //await agentsHistoricBreakResumeFunction(userSelection);
+  let agentsHistoricAssignationResume = []; // await agentsHistoricAssignationResumeFunction(userSelection);
 
-  let scale = await scaleFunction( userSelection );
+  let scale = await scaleFunction(userSelection);
 
   let colors = [
     {
       inboundServiceLevel: onColorForPercentage(
-        displayInboundCallsIndicators[ 0 ].inboundServiceLevel,
-        scale[ 0 ]
+        displayInboundCallsIndicators[0].inboundServiceLevel,
+        scale[0]
       ),
       inboundAttentionLevel: onColorForPercentage(
-        displayInboundCallsIndicators[ 0 ].inboundAttentionLevel,
-        scale[ 0 ]
+        displayInboundCallsIndicators[0].inboundAttentionLevel,
+        scale[0]
       ),
       inboundAbandonLevel: onColorForPercentage(
-        displayInboundCallsIndicators[ 0 ].inboundAbandonLevel,
-        scale[ 0 ]
+        displayInboundCallsIndicators[0].inboundAbandonLevel,
+        scale[0]
       ),
       callsOnQueue: onColorForCallsOnQueue(
-        displayInboundCurrentCallsIndicators[ 0 ].maxWaitTimeOnQue,
-        parseInt( process.env.CDR_SERVICE_IDEAL_TIME )
+        displayInboundCurrentCallsIndicators[0].maxWaitTimeOnQue,
+        parseInt(process.env.CDR_SERVICE_IDEAL_TIME)
       ),
       callsOnQueueWaitTime:
-        displayInboundCurrentCallsIndicators[ 0 ].maxWaitTimeOnQue,
-      callsOnQueueIdeal: parseInt( process.env.CDR_SERVICE_IDEAL_TIME )
+        displayInboundCurrentCallsIndicators[0].maxWaitTimeOnQue,
+      callsOnQueueIdeal: parseInt(process.env.CDR_SERVICE_IDEAL_TIME)
     }
   ];
 
@@ -107,12 +107,12 @@ export async function displayInboundIndicators ( userSelection ) {
 /**************************************** */
 // pro-show-selection
 
-async function proShowSelection ( userSelection, type ) {
-  let current_time = moment().format( "HH:mm:ss" );
-  let current_date = moment().format( "YYYY-MM-DD" );
-  let current_year = moment().format( "YYYY" );
-  let current_month = moment().format( "M" );
-  let current_day = moment().format( "D" );
+async function proShowSelection(userSelection, type) {
+  let current_time = moment().format("HH:mm:ss");
+  let current_date = moment().format("YYYY-MM-DD");
+  let current_year = moment().format("YYYY");
+  let current_month = moment().format("M");
+  let current_day = moment().format("D");
 
   let query = `
   SELECT
@@ -120,27 +120,25 @@ async function proShowSelection ( userSelection, type ) {
   FROM
   ProShowDisplay
   WHERE
-  JSON_UNQUOTE(JSON_EXTRACT(pro_show_display_type, "$.value"))= '${type }'
+  JSON_UNQUOTE(JSON_EXTRACT(pro_show_display_type, "$.value"))= '${type}'
   AND
-  pro_show_display_start_time <= '${current_time }'
+  pro_show_display_start_time <= '${current_time}'
   AND
-  pro_show_display_end_time >= '${current_time }'
+  pro_show_display_end_time >= '${current_time}'
   ORDER BY pro_show_display_start_time DESC
   limit 1
   `;
-
 
   try {
     let result = userSelection;
     let temp, temp2, temp3;
 
-    temp = await pool.destinyReports.query( query );
+    temp = await pool.destinyReports.query(query);
 
-    if ( !temp.length == 0 ) {
-      temp2 = removeRowDataPacket( temp );
+    if (!temp.length == 0) {
+      temp2 = removeRowDataPacket(temp);
 
-
-      temp3 = JSON.parse( temp2[ 0 ].selection );
+      temp3 = JSON.parse(temp2[0].selection);
 
       temp3.start_date = { year: 2019, month: 10, day: 9 };
       temp3.end_date = { year: 2019, month: 10, day: 9 };
@@ -163,12 +161,11 @@ async function proShowSelection ( userSelection, type ) {
       temp3.creation_date = current_date;
       temp3.creation_time = current_time;
 
-
       return temp3;
     } else {
       return userSelection;
     }
-  } catch ( error ) {
+  } catch (error) {
     let result = userSelection;
     return result;
   }
@@ -176,7 +173,7 @@ async function proShowSelection ( userSelection, type ) {
 
 /**************************************** */
 // indicators
-async function displayInboundCallsIndicatorsFunction ( userSelection ) {
+async function displayInboundCallsIndicatorsFunction(userSelection) {
   let result = null;
   let resume_error = false;
   // ,SUM(case when callentry_duration_sec_wait <= ${
@@ -193,18 +190,24 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
   
   now() AS now
   ,DAYNAME(callentry_date) as day_name
-  ,WEEKDAY(callentry_date) + ${process.env.MONDAY_CONFIG } as week_day
+  ,WEEKDAY(callentry_date) + ${process.env.MONDAY_CONFIG} as week_day
       
-  ,'${objectDateToTextDate( userSelection.start_date ) }' AS start_date
-  ,'${objectDateToTextDate( userSelection.end_date ) }' AS end_date
-  ,'${userSelection.start_time }' AS start_time
-  ,'${userSelection.end_time }' AS end_time
+  ,'${objectDateToTextDate(userSelection.start_date)}' AS start_date
+  ,'${objectDateToTextDate(userSelection.end_date)}' AS end_date
+  ,'${valueFromObject(
+    userSelection.start_time,
+    userSelection.start_time
+  )}' AS start_time
+  ,'${valueFromObject(
+    userSelection.end_time,
+    userSelection.end_time
+  )}' AS end_time
   
   ,MIN(DATE_FORMAT(callentry_datetime_init, '%H:%i:%s')) AS min_start_time
   ,MAX(DATE_FORMAT(callentry_datetime_end, '%H:%i:%s')) AS max_end_time
   
-  ,${process.env.CDR_SERVICE_IDEAL_TIME } AS idealResponseTime
-  ,${process.env.CDR_SHORTCALL_TIME } AS shortTimeDef
+  ,${process.env.CDR_SERVICE_IDEAL_TIME} AS idealResponseTime
+  ,${process.env.CDR_SHORTCALL_TIME} AS shortTimeDef
   ,MAX(callentry_duration_sec_wait) as maxWaitTime
   
   ,SUM(case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' )then 1 else 0 end) AS inboundReceived
@@ -215,21 +218,21 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
   
   ,SUM(case when callentry_duration_sec <= ${
     process.env.CDR_SHORTCALL_TIME
-    } then 1 else 0 end) AS inboundShort
+  } then 1 else 0 end) AS inboundShort
   
   ,SUM(case when (callentry_duration_sec_wait <= ${
     process.env.CDR_SERVICE_IDEAL_TIME
-    } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundBeforeTime
+  } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundBeforeTime
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end) - SUM(case when (callentry_duration_sec_wait <= ${
     process.env.CDR_SERVICE_IDEAL_TIME
-    } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundAfterTime
+  } AND callentry_status = 'terminada')then 1 else 0 end) AS inboundAfterTime
   
   ,SUM(callentry_hung_agent) AS inboundHungAgent
   
   ,SUM(case when (callentry_status = 'terminada' AND callentry_duration_sec_wait <= ${
     process.env.CDR_SERVICE_IDEAL_TIME
-    } ) then 1 else 0 end) / SUM( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS inboundServiceLevel
+  } ) then 1 else 0 end) / SUM( case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' ) then 1 else 0 end) AS inboundServiceLevel
   
   ,SUM(case when callentry_status = 'terminada' then 1 else 0 end)/
    SUM(case when (callentry_status = 'abandonada' OR callentry_status = 'terminada' )then 1 else 0 end) AS inboundAttentionLevel
@@ -272,66 +275,66 @@ async function displayInboundCallsIndicatorsFunction ( userSelection ) {
    
    -- TIME AND DATE
    ${dateAndTimeSqlQueryRealTime(
-      userSelection,
-      "callentry_datetime_entry_queue"
-    ) }
+     userSelection,
+     "callentry_datetime_entry_queue"
+   )}
       
    -- AGENT
-   ${arrayToSqlQuery( userSelection.agent, "callentry_agent_id" ) }
+   ${arrayToSqlQuery(userSelection.agent, "callentry_agent_id")}
    
    -- SUPERVISOR
   ${objectToJsonSqlQuery(
-      userSelection.supervisor,
-      "callentry_people_json",
-      "supervisor"
-    ) }
+    userSelection.supervisor,
+    "callentry_people_json",
+    "supervisor"
+  )}
   -- SCHEDULE
   ${objectToJsonSqlQuery(
-      userSelection.client,
-      "callentry_time_json",
-      "schedule"
-    ) }
+    userSelection.client,
+    "callentry_time_json",
+    "schedule"
+  )}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "callentry_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "callentry_people_json", "role")}
   -- CLIENT
   ${arrayToJsonSqlQuery(
-      userSelection.client,
-      "callentry_operation_json",
-      "client"
-    ) }
+    userSelection.client,
+    "callentry_operation_json",
+    "client"
+  )}
   -- QUEUE
-  ${arrayToSqlQuery( userSelection.queue, "callentry_queue_id" ) }
+  ${arrayToSqlQuery(userSelection.queue, "callentry_queue_id")}
   -- SERVICE
   ${arrayToJsonSqlQuery(
-      userSelection.service,
-      "callentry_operation_json",
-      "service"
-    ) }
+    userSelection.service,
+    "callentry_operation_json",
+    "service"
+  )}
    
    -- CAMPAIGN
-   ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
+   ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
    
    -- BREAK
-   ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+   ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
    
    -- ASIGNACION
-   ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+   ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
    
   
    -- END ---------------------------------------------------------------
   `;
 
   try {
-    result = await pool.destinyReports.query( query );
+    result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { errorDetail: error } );
+  } catch (error) {
+    return (result = { errorDetail: error });
   }
 }
 
 /**************************************** */
 // current calls
-async function displayInboundCurrentCallsIndicatorsFunction ( userSelection ) {
+async function displayInboundCurrentCallsIndicatorsFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -357,43 +360,43 @@ ON rcc_callentry_queue_id = inv_queue_id
 WHERE 1
 -- TIME AND DATE
 -- AGENT
-${arrayToSqlQuery( userSelection.agent, "inv_agent_id" ) }
+${arrayToSqlQuery(userSelection.agent, "inv_agent_id")}
 -- SUPERVISOR
 ${objectToJsonSqlQuery(
-    userSelection.supervisor,
-    "inv_agent_people_json",
-    "supervisor"
-  ) }
+  userSelection.supervisor,
+  "inv_agent_people_json",
+  "supervisor"
+)}
 -- SCHEDULE
-${objectToJsonSqlQuery( userSelection.client, "inv_agent_time_json", "schedule" ) }
+${objectToJsonSqlQuery(userSelection.client, "inv_agent_time_json", "schedule")}
 -- ROLE
-${objectToJsonSqlQuery( userSelection.client, "inv_agent_people_json", "role" ) }
+${objectToJsonSqlQuery(userSelection.client, "inv_agent_people_json", "role")}
 -- CLIENT
 ${arrayToJsonSqlQuery(
-    userSelection.client,
-    "inv_agent_operation_json",
-    "client"
-  ) }
+  userSelection.client,
+  "inv_agent_operation_json",
+  "client"
+)}
 -- QUEUE
-${arrayToSqlQuery( userSelection.queue, "rcc_callentry_queue_id" ) }
+${arrayToSqlQuery(userSelection.queue, "rcc_callentry_queue_id")}
 -- SERVICE
 ${arrayToJsonSqlQuery(
-    userSelection.service,
-    "inv_agent_operation_json",
-    "service"
-  ) }
+  userSelection.service,
+  "inv_agent_operation_json",
+  "service"
+)}
 -- CAMPAIGN
-${arrayToSqlQuery( userSelection.campaign, "rcc_callentry_campaign_id" ) }
+${arrayToSqlQuery(userSelection.campaign, "rcc_callentry_campaign_id")}
 -- BREAK
 -- ASIGNACION
 -- END -------------------------------------------------------
 `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
@@ -438,7 +441,7 @@ async function agentsPlannedTotalFunction(userSelection) {
 
 /**************************************** */
 // Agents connected
-async function agentsConnectedTotalFunction ( userSelection ) {
+async function agentsConnectedTotalFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -473,51 +476,51 @@ async function agentsConnectedTotalFunction ( userSelection ) {
   
   
   -- AGENT
-   ${arrayToSqlQuery( userSelection.agent, "rca_agent_id" ) }
+   ${arrayToSqlQuery(userSelection.agent, "rca_agent_id")}
   
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "rca_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "rca_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rca_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "rca_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rca_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "rca_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "rca_operation_json", "client")}
   -- QUEUE
-  ${arrayToJsonSqlQuery( userSelection.queue, "rca_operation_json", "queue" ) }
+  ${arrayToJsonSqlQuery(userSelection.queue, "rca_operation_json", "queue")}
   -- SERVICE
-  ${arrayToJsonSqlQuery( userSelection.service, "rca_operation_json", "service" ) }
+  ${arrayToJsonSqlQuery(userSelection.service, "rca_operation_json", "service")}
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "rca_operation_json",
     "campaign"
-  ) }
+  )}
   
   -- BREAK
-  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
   
   -- ASIGNACION
-  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
   
   
   -- END -----------------------------------------------------------
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
 // Agents connected
-async function agentsLoggedTotalFunction ( userSelection ) {
+async function agentsLoggedTotalFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -544,50 +547,50 @@ async function agentsLoggedTotalFunction ( userSelection ) {
   WHERE 1
   
   -- AGENT
-  ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
+  ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
   
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "audit_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "audit_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "audit_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "audit_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "audit_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "audit_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "audit_operation_json", "client")}
   -- QUEUE
-  ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
+  ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "audit_operation_json",
     "service"
-  ) }
+  )}
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "audit_operation_json",
     "campaign"
-  ) }
+  )}
   
     
   -- END ------------------------------------------------------------
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
 /**************************************** */
 // agents grouped
-async function agentsConnectedByGroupFunction ( userSelection ) {
+async function agentsConnectedByGroupFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -624,36 +627,36 @@ async function agentsConnectedByGroupFunction ( userSelection ) {
   
   
   -- AGENT
-  ${arrayToSqlQuery( userSelection.agent, "rca_agent_id" ) }
+  ${arrayToSqlQuery(userSelection.agent, "rca_agent_id")}
   
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "rca_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "rca_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rca_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "rca_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rca_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "rca_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "rca_operation_json", "client")}
   -- QUEUE
-  ${arrayToJsonSqlQuery( userSelection.queue, "rca_operation_json", "queue" ) }
+  ${arrayToJsonSqlQuery(userSelection.queue, "rca_operation_json", "queue")}
   -- SERVICE
-  ${arrayToJsonSqlQuery( userSelection.service, "rca_operation_json", "service" ) }
+  ${arrayToJsonSqlQuery(userSelection.service, "rca_operation_json", "service")}
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "rca_operation_json",
     "campaign"
-  ) }
+  )}
   
   -- BREAK
-  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
   
   -- ASIGNACION
-  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
   
    
   GROUP BY rca_group_name
@@ -662,16 +665,16 @@ async function agentsConnectedByGroupFunction ( userSelection ) {
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
 /**************************************** */
 // agents historic
-async function agentHistoricResumeFunction ( userSelection ) {
+async function agentHistoricResumeFunction(userSelection) {
   let result = null;
   let resume_error = false;
 
@@ -688,7 +691,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
   ON hca_agent_id = inv_agent_id
   WHERE 1
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "hca_agent_date" ) }
+  ${dateAndTimeSqlQueryRealTime(userSelection, "hca_agent_date")}
   
   UNION
   SELECT
@@ -714,47 +717,47 @@ async function agentHistoricResumeFunction ( userSelection ) {
       audit_break_id is null
       
       -- TIME AND DATE
-      ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+      ${dateAndTimeSqlQueryRealTime(userSelection, "audit_datetime_init")}
       -- AGENT
-      ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
+      ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
       -- SUPERVISOR
       ${objectToJsonSqlQuery(
-    userSelection.supervisor,
-    "audit_people_json",
-    "supervisor"
-  ) }
+        userSelection.supervisor,
+        "audit_people_json",
+        "supervisor"
+      )}
       -- SCHEDULE
       ${objectToJsonSqlQuery(
-    userSelection.client,
-    "audit_time_json",
-    "schedule"
-  ) }
+        userSelection.client,
+        "audit_time_json",
+        "schedule"
+      )}
       -- ROLE
-      ${objectToJsonSqlQuery( userSelection.client, "audit_people_json", "role" ) }
+      ${objectToJsonSqlQuery(userSelection.client, "audit_people_json", "role")}
       -- CLIENT
       ${arrayToJsonSqlQuery(
-    userSelection.client,
-    "audit_operation_json",
-    "client"
-  ) }
+        userSelection.client,
+        "audit_operation_json",
+        "client"
+      )}
       -- QUEUE
       ${arrayToJsonSqlQuery(
-    userSelection.queue,
-    "audit_operation_json",
-    "queue"
-  ) }
+        userSelection.queue,
+        "audit_operation_json",
+        "queue"
+      )}
       -- SERVICE
       ${arrayToJsonSqlQuery(
-    userSelection.service,
-    "audit_operation_json",
-    "service"
-  ) }
+        userSelection.service,
+        "audit_operation_json",
+        "service"
+      )}
       -- CAMPAIGN
       ${arrayToJsonSqlQuery(
-    userSelection.campaign,
-    "audit_operation_json",
-    "campaign"
-  ) }
+        userSelection.campaign,
+        "audit_operation_json",
+        "campaign"
+      )}
   
   UNION
   SELECT
@@ -781,39 +784,39 @@ async function agentHistoricResumeFunction ( userSelection ) {
   ${dateAndTimeSqlQueryRealTime(
     userSelection,
     "callentry_datetime_entry_queue"
-  ) }
+  )}
   -- AGENT
-  ${arrayToSqlQuery( userSelection.agent, "callentry_agent_id" ) }
+  ${arrayToSqlQuery(userSelection.agent, "callentry_agent_id")}
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "callentry_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
   ${objectToJsonSqlQuery(
     userSelection.client,
     "callentry_time_json",
     "schedule"
-  ) }
+  )}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "callentry_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "callentry_people_json", "role")}
   -- CLIENT
   ${arrayToJsonSqlQuery(
     userSelection.client,
     "callentry_operation_json",
     "client"
-  ) }
+  )}
   -- QUEUE
-  ${arrayToSqlQuery( userSelection.queue, "callentry_queue_id" ) }
+  ${arrayToSqlQuery(userSelection.queue, "callentry_queue_id")}
   -- SERVICE
   ${arrayToJsonSqlQuery(
     userSelection.service,
     "callentry_operation_json",
     "service"
-  ) }
+  )}
   -- CAMPAIGN
-  ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
+  ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
   
   UNION
   SELECT
@@ -839,33 +842,33 @@ async function agentHistoricResumeFunction ( userSelection ) {
   cdr_call_made = 1
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "cdr_calldate" ) }
+  ${dateAndTimeSqlQueryRealTime(userSelection, "cdr_calldate")}
   -- AGENT
-  ${arrayToSqlQuery( userSelection.agent, "cdr_agent_id" ) }
+  ${arrayToSqlQuery(userSelection.agent, "cdr_agent_id")}
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "cdr_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "cdr_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "cdr_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "cdr_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "cdr_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "cdr_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "cdr_operation_json", "client")}
   -- QUEUE
-  ${arrayToSqlQuery( userSelection.queue, "cdr_queue_id" ) }
+  ${arrayToSqlQuery(userSelection.queue, "cdr_queue_id")}
   -- SERVICE
-  ${arrayToJsonSqlQuery( userSelection.service, "cdr_operation_json", "service" ) }
+  ${arrayToJsonSqlQuery(userSelection.service, "cdr_operation_json", "service")}
   -- CAMPAIGN
-  ${arrayToSqlQuery( userSelection.campaign, "callentry_campaign_id" ) }
+  ${arrayToSqlQuery(userSelection.campaign, "callentry_campaign_id")}
         `;
 
   try {
-    const result = await pool.destinyReports.query( query );
+    const result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
+  } catch (error) {
     resume_error = true;
     return {
       error: "agentsIndicators - agentHistoricResumeFunction " + error
@@ -875,7 +878,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
 
 /**************************************** */
 // break auxiliar resume
-async function agentsAuxiliarResumeFunction ( userSelection ) {
+async function agentsAuxiliarResumeFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -913,39 +916,39 @@ async function agentsAuxiliarResumeFunction ( userSelection ) {
     rcb_break_productivity = 0
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "rcb_break_datetime_init" ) }
+  ${dateAndTimeSqlQueryRealTime(userSelection, "rcb_break_datetime_init")}
   
   -- AGENT
-  ${arrayToSqlQuery( userSelection.agent, "inv_agent_id" ) }
+  ${arrayToSqlQuery(userSelection.agent, "inv_agent_id")}
   
   -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "rcb_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "rcb_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rcb_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "rcb_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rcb_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "rcb_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "rcb_operation_json", "client")}
   -- QUEUE
-  ${arrayToJsonSqlQuery( userSelection.queue, "rcb_operation_json", "queue" ) }
+  ${arrayToJsonSqlQuery(userSelection.queue, "rcb_operation_json", "queue")}
   -- SERVICE
-  ${arrayToJsonSqlQuery( userSelection.service, "rcb_operation_json", "service" ) }
+  ${arrayToJsonSqlQuery(userSelection.service, "rcb_operation_json", "service")}
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "rcb_operation_json",
     "campaign"
-  ) }
+  )}
   
   -- BREAK
-  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
   
   -- ASIGNACION
-  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
   
   
   GROUP BY rcb_break_name
@@ -954,16 +957,16 @@ async function agentsAuxiliarResumeFunction ( userSelection ) {
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
 /**************************************** */
 // break assignation resume
-async function agentsAssignationResumeFunction ( userSelection ) {
+async function agentsAssignationResumeFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -1001,39 +1004,39 @@ async function agentsAssignationResumeFunction ( userSelection ) {
     rcb_break_productivity = 1
   
     -- TIME AND DATE
-    ${dateAndTimeSqlQueryRealTime( userSelection, "rcb_break_datetime_init" ) }
+    ${dateAndTimeSqlQueryRealTime(userSelection, "rcb_break_datetime_init")}
     
     -- AGENT
-    ${arrayToSqlQuery( userSelection.agent, "inv_agent_id" ) }
+    ${arrayToSqlQuery(userSelection.agent, "inv_agent_id")}
     
     -- SUPERVISOR
   ${objectToJsonSqlQuery(
     userSelection.supervisor,
     "rcb_people_json",
     "supervisor"
-  ) }
+  )}
   -- SCHEDULE
-  ${objectToJsonSqlQuery( userSelection.client, "rcb_time_json", "schedule" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rcb_time_json", "schedule")}
   -- ROLE
-  ${objectToJsonSqlQuery( userSelection.client, "rcb_people_json", "role" ) }
+  ${objectToJsonSqlQuery(userSelection.client, "rcb_people_json", "role")}
   -- CLIENT
-  ${arrayToJsonSqlQuery( userSelection.client, "rcb_operation_json", "client" ) }
+  ${arrayToJsonSqlQuery(userSelection.client, "rcb_operation_json", "client")}
   -- QUEUE
-  ${arrayToJsonSqlQuery( userSelection.queue, "rcb_operation_json", "queue" ) }
+  ${arrayToJsonSqlQuery(userSelection.queue, "rcb_operation_json", "queue")}
   -- SERVICE
-  ${arrayToJsonSqlQuery( userSelection.service, "rcb_operation_json", "service" ) }
+  ${arrayToJsonSqlQuery(userSelection.service, "rcb_operation_json", "service")}
   -- CAMPAIGN
   ${arrayToJsonSqlQuery(
     userSelection.campaign,
     "rcb_operation_json",
     "campaign"
-  ) }
+  )}
   
   -- BREAK
-  ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
   
   -- ASIGNACION
-  ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+  ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
   
   
   GROUP BY rcb_break_name
@@ -1042,16 +1045,16 @@ async function agentsAssignationResumeFunction ( userSelection ) {
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
 /**************************************** */
 // scale
-async function scaleFunction ( userSelection ) {
+async function scaleFunction(userSelection) {
   let result = null;
   let resume_error = false;
   let query = `
@@ -1060,18 +1063,18 @@ async function scaleFunction ( userSelection ) {
     FROM
     InvScale
     WHERE
-    inv_scale_name = '${process.env.COLORSCALE_NAME }'
+    inv_scale_name = '${process.env.COLORSCALE_NAME}'
   `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
-async function agentsHistoricBreakResumeFunction ( userSelection ) {
+async function agentsHistoricBreakResumeFunction(userSelection) {
   let query = `
   SELECT
       inv_break_name as name
@@ -1098,65 +1101,65 @@ async function agentsHistoricBreakResumeFunction ( userSelection ) {
     AND
       inv_break_name is not null
       -- TIME AND DATE
-      ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+      ${dateAndTimeSqlQueryRealTime(userSelection, "audit_datetime_init")}
       -- AGENT
-      ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
+      ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
       -- SUPERVISOR
       ${objectToJsonSqlQuery(
-    userSelection.supervisor,
-    "audit_people_json",
-    "supervisor"
-  ) }
+        userSelection.supervisor,
+        "audit_people_json",
+        "supervisor"
+      )}
       -- SCHEDULE
       ${objectToJsonSqlQuery(
-    userSelection.client,
-    "audit_time_json",
-    "schedule"
-  ) }
+        userSelection.client,
+        "audit_time_json",
+        "schedule"
+      )}
       -- ROLE
-      ${objectToJsonSqlQuery( userSelection.client, "audit_people_json", "role" ) }
+      ${objectToJsonSqlQuery(userSelection.client, "audit_people_json", "role")}
       -- CLIENT
       ${arrayToJsonSqlQuery(
-    userSelection.client,
-    "audit_operation_json",
-    "client"
-  ) }
+        userSelection.client,
+        "audit_operation_json",
+        "client"
+      )}
       -- QUEUE
       ${arrayToJsonSqlQuery(
-    userSelection.queue,
-    "audit_operation_json",
-    "queue"
-  ) }
+        userSelection.queue,
+        "audit_operation_json",
+        "queue"
+      )}
       -- SERVICE
       ${arrayToJsonSqlQuery(
-    userSelection.service,
-    "audit_operation_json",
-    "service"
-  ) }
+        userSelection.service,
+        "audit_operation_json",
+        "service"
+      )}
       -- CAMPAIGN
       ${arrayToJsonSqlQuery(
-    userSelection.campaign,
-    "audit_operation_json",
-    "campaign"
-  ) }
+        userSelection.campaign,
+        "audit_operation_json",
+        "campaign"
+      )}
       -- BREAK
-      ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+      ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
       -- ASIGNACION
-      ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+      ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
     
       
       GROUP BY inv_break_name
 `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
 
-async function agentsHistoricAssignationResumeFunction ( userSelection ) {
+async function agentsHistoricAssignationResumeFunction(userSelection) {
   let query = `
   SELECT
       inv_break_name as name
@@ -1183,52 +1186,52 @@ async function agentsHistoricAssignationResumeFunction ( userSelection ) {
     AND
       inv_break_name is not null
       -- TIME AND DATE
-    ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+    ${dateAndTimeSqlQueryRealTime(userSelection, "audit_datetime_init")}
     -- AGENT
-    ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
+    ${arrayToSqlQuery(userSelection.agent, "audit_agent_id")}
     -- SUPERVISOR
     ${objectToJsonSqlQuery(
-    userSelection.supervisor,
-    "audit_people_json",
-    "supervisor"
-  ) }
+      userSelection.supervisor,
+      "audit_people_json",
+      "supervisor"
+    )}
     -- SCHEDULE
-    ${objectToJsonSqlQuery( userSelection.client, "audit_time_json", "schedule" ) }
+    ${objectToJsonSqlQuery(userSelection.client, "audit_time_json", "schedule")}
     -- ROLE
-    ${objectToJsonSqlQuery( userSelection.client, "audit_people_json", "role" ) }
+    ${objectToJsonSqlQuery(userSelection.client, "audit_people_json", "role")}
     -- CLIENT
     ${arrayToJsonSqlQuery(
-    userSelection.client,
-    "audit_operation_json",
-    "client"
-  ) }
+      userSelection.client,
+      "audit_operation_json",
+      "client"
+    )}
     -- QUEUE
-    ${arrayToJsonSqlQuery( userSelection.queue, "audit_operation_json", "queue" ) }
+    ${arrayToJsonSqlQuery(userSelection.queue, "audit_operation_json", "queue")}
     -- SERVICE
     ${arrayToJsonSqlQuery(
-    userSelection.service,
-    "audit_operation_json",
-    "service"
-  ) }
+      userSelection.service,
+      "audit_operation_json",
+      "service"
+    )}
     -- CAMPAIGN
     ${arrayToJsonSqlQuery(
-    userSelection.campaign,
-    "audit_operation_json",
-    "campaign"
-  ) }
+      userSelection.campaign,
+      "audit_operation_json",
+      "campaign"
+    )}
     -- BREAK
-    ${arrayToSqlQuery( userSelection.auxiliar, "audit_break_id" ) }
+    ${arrayToSqlQuery(userSelection.auxiliar, "audit_break_id")}
     -- ASIGNACION
-    ${arrayToSqlQuery( userSelection.assignation, "audit_break_id" ) }
+    ${arrayToSqlQuery(userSelection.assignation, "audit_break_id")}
     
       
       GROUP BY inv_break_name
 `;
 
   try {
-    let result = await pool.destinyReports.query( query );
+    let result = await pool.destinyReports.query(query);
     return result;
-  } catch ( error ) {
-    return ( result = { error: error } );
+  } catch (error) {
+    return (result = { error: error });
   }
 }
