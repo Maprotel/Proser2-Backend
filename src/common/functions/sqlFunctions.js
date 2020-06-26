@@ -38,15 +38,13 @@ export function dateAndTimeSqlQuery(
   }
   // create sql queries
   let date = `
-  AND (
-    DATE(${datetime_init_field_name}) BETWEEN '${start_date}' AND '${end_date}'
-    OR
-    DATE(${datetime_end_field_name}) BETWEEN '${start_date}' AND '${end_date}'
-  ) `;
+  AND
+  ${datetime_init_field_name} BETWEEN '${start_date + " " + start_time}' AND '${end_date + " " + end_time}'
+    `;
   let time = `AND TIME_TO_SEC(TIME(${datetime_init_field_name})) >= TIME_TO_SEC('${start_time}')
   AND  TIME_TO_SEC(TIME(${datetime_init_field_name})) < TIME_TO_SEC('${end_time}')`;
 
-  result = date + "\n" + time + "\n";
+  result = date;
 
   return result;
 }

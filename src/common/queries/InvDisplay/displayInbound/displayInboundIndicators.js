@@ -20,7 +20,7 @@ import {
   arrayToJsonSqlQuery,
   sqlIntervalSqlQuery,
   sqlIntervalGroupSqlQuery
-} from "../../../functions/sqlFunctionsBetter";
+} from "../../../functions/sqlFunctions";
 
 import {
   onColorForPercentage,
@@ -33,7 +33,7 @@ import moment from "moment";
 /******************************************************************** */
 // MAIN FUNCTION
 export async function displayInboundIndicators(userSelection) {
-  console.log(userSelection);
+
   let result = {};
   let resume_error = false;
 
@@ -50,7 +50,7 @@ export async function displayInboundIndicators(userSelection) {
     userSelection
   );
 
-  let agentHistoricResume = []//await agentHistoricResumeFunction(userSelection);
+  let agentHistoricResume = []; //await agentHistoricResumeFunction(userSelection);
 
   let agentsAuxiliarResume = await agentsAuxiliarResumeFunction( userSelection );
   let agentsAssignationResume = await agentsAssignationResumeFunction(
@@ -689,7 +689,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
   ON hca_agent_id = inv_agent_id
   WHERE 1
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "hca_agent_date" ) }
+  ${dateAndTimeSqlQuery( userSelection, "hca_agent_date" ) }
   
   UNION
   SELECT
@@ -715,7 +715,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
       audit_break_id is null
       
       -- TIME AND DATE
-      ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+      ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
       -- AGENT
       ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
       -- SUPERVISOR
@@ -779,7 +779,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
   callentry_status = 'terminada'
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime(
+  ${dateAndTimeSqlQuery(
     userSelection,
     "callentry_datetime_entry_queue"
   ) }
@@ -840,7 +840,7 @@ async function agentHistoricResumeFunction ( userSelection ) {
   cdr_call_made = 1
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "cdr_calldate" ) }
+  ${dateAndTimeSqlQuery( userSelection, "cdr_calldate" ) }
   -- AGENT
   ${arrayToSqlQuery( userSelection.agent, "cdr_agent_id" ) }
   -- SUPERVISOR
@@ -914,7 +914,7 @@ async function agentsAuxiliarResumeFunction ( userSelection ) {
     rcb_break_productivity = 0
   
   -- TIME AND DATE
-  ${dateAndTimeSqlQueryRealTime( userSelection, "rcb_break_datetime_init" ) }
+  ${dateAndTimeSqlQuery( userSelection, "rcb_break_datetime_init" ) }
   
   -- AGENT
   ${arrayToSqlQuery( userSelection.agent, "inv_agent_id" ) }
@@ -1002,7 +1002,7 @@ async function agentsAssignationResumeFunction ( userSelection ) {
     rcb_break_productivity = 1
   
     -- TIME AND DATE
-    ${dateAndTimeSqlQueryRealTime( userSelection, "rcb_break_datetime_init" ) }
+    ${dateAndTimeSqlQuery( userSelection, "rcb_break_datetime_init" ) }
     
     -- AGENT
     ${arrayToSqlQuery( userSelection.agent, "inv_agent_id" ) }
@@ -1099,7 +1099,7 @@ async function agentsHistoricBreakResumeFunction ( userSelection ) {
     AND
       inv_break_name is not null
       -- TIME AND DATE
-      ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+      ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
       -- AGENT
       ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
       -- SUPERVISOR
@@ -1184,7 +1184,7 @@ async function agentsHistoricAssignationResumeFunction ( userSelection ) {
     AND
       inv_break_name is not null
       -- TIME AND DATE
-    ${dateAndTimeSqlQueryRealTime( userSelection, "audit_datetime_init" ) }
+    ${dateAndTimeSqlQuery( userSelection, "audit_datetime_init" ) }
     -- AGENT
     ${arrayToSqlQuery( userSelection.agent, "audit_agent_id" ) }
     -- SUPERVISOR
